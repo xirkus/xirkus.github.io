@@ -13,6 +13,7 @@ jobs:
       - ruby/install:
           version: '2.7.2'
       - run: "rvm --default use 2.7.2 && gem install bundler"
+      - run: "sudo apt update && sudo apt install nodejs"
       - run: "nvm install v15.6.0 && nvm use 15.6.0"
       - run: "npm run setup && npm run deploy"
 
