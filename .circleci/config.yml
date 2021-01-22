@@ -6,14 +6,15 @@ orbs:
 
 jobs:
   build:
-    docker:
-      - image: cimg/node:15.6.0
+    machine: true
     steps:
       - checkout
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
-          version: '2.7'
-      - run: "mkdir /home/circleci/.local/ && touch /home/circleci/.local/package.json && npm --prefix=$HOME/.local --global run setup && npm --prefix=$HOME/.local --global run deploy"
+          version: '2.7.2'
+      - run: "rvm --default use 2.7.2 && gem install bundler"
+      - run: "nvm install v15.6.0 && nvm use 15.6.0"
+      - run: "npm run setup && npm run deploy"
 
 workflows:
   deploy-site:
