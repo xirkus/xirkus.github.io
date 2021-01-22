@@ -13,8 +13,8 @@ jobs:
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7'
-#      - node/install:
-#          install-yarn: true
+      - node/install:
+          version: '6.2'
       - run: "npm run setup && npm run deploy"
 
 workflows:
