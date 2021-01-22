@@ -14,7 +14,8 @@ jobs:
       - ruby/install:
           version: '2.7'
       - node/install:
-          version: '6.2'
+          node-version: '6.17.1'
+          install-yarn: true
       - run: "npm run setup && npm run deploy"
 
 workflows:
