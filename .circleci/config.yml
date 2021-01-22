@@ -10,12 +10,11 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: "gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0"
       - ruby/install:
           version: '2.7'
-      - run: ruby --version
       - node/install:
           install-yarn: true
-      - run: node --version
       - run: "npm run setup && npm run deploy"
 
 workflows:
