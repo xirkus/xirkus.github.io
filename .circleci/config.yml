@@ -13,7 +13,7 @@ jobs:
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7'
-      - run: "mkdir .local && npm --prefix=$HOME/.local --global run setup && npm --prefix=$HOME/.local --global run deploy"
+      - run: "mkdir .local && touch .local/package.json && npm --prefix=$HOME/.local --global run setup && npm --prefix=$HOME/.local --global run deploy"
 
 workflows:
   deploy-site:
