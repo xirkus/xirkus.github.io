@@ -14,8 +14,8 @@ jobs:
           version: '2.7.2'
       - run: /bin/bash --login -c "rvm --default use 2.7.2" && gem install bundler
       - run: sudo apt update && sudo apt install nodejs
-      - run: /bin/bash --login -c "nvm install v15.6.0" && /bin/bash --login -c "nvm use 15.6.0"
-      - run: npm run setup && npm run deploy
+      - run: /bin/bash --login -c "nvm install v15.6.0"
+      - run: /bin/bash --login -c "nvm use 15.6.0 && npm run setup && npm run deploy"
 
 workflows:
   deploy-site:
