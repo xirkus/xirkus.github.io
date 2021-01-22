@@ -7,7 +7,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:15.6.0
+      - image: cimg/node:8.17.0
     steps:
       - checkout
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
