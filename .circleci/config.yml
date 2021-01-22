@@ -7,14 +7,14 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:8.17.0
+      - image: cimg/node:15.6.0
     steps:
       - checkout
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7'
       - run: "node --version"
-      - run: "npm run setup && npm run deploy"
+      - run: "sudo npm run setup && sudo npm run deploy"
 
 workflows:
   deploy-site:
