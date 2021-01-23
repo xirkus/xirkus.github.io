@@ -1,0 +1,4 @@
+---
+slug: circleci
+name: CircleCI
+---
