@@ -1,0 +1,73 @@
+==================================================================
+https://keybase.io/mllaguno
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://xirkus.github.io
+  * I am mllaguno (https://keybase.io/mllaguno) on keybase.
+  * I have a public key with fingerprint 404C E144 8375 3993 DAFB  CEDD 799A B1E2 0103 7B37
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01016db66c42ef8ab8e40e1ac394c0353b375b14d5ace6192be4b356a22ab77616b20a",
+      "fingerprint": "404ce14483753993dafbcedd799ab1e201037b37",
+      "host": "keybase.io",
+      "key_id": "799ab1e201037b37",
+      "kid": "01016db66c42ef8ab8e40e1ac394c0353b375b14d5ace6192be4b356a22ab77616b20a",
+      "uid": "c4ce8f70fef28ece8ae95cf221fa5f19",
+      "username": "mllaguno"
+    },
+    "service": {
+      "hostname": "xirkus.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1611366137,
+  "expire_in": 157680000,
+  "prev": "67665b6ea6e4a3cdac3d8885af2bdfc9478c51baed3eba8c968fa4d09228fdae",
+  "seqno": 5,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtUm1QVFUYXgTiowHMZEUBgzs2g/HR/f5gZJhlijIGpcExpGA9995zlxvL3m0/
+EFQCxvAjhxGFKIQx0BGSzMgJtGAGdREoLBJJMYbQUBDaSG1IsiY6S/qvn50/55z3
+PM/zPs87pyrIW+fvdfRiVNNYfUqD18C0qNv6ZKluByZqcjGWuAPLh4sbNMvQ7jDm
+qzKWiOEETrCyyLISTUKFByIPaRwSQKIEWsIphhIpjhEJWmaABFlCIEVIixTDApIE
+IsexBCuSOMDiMEW1mKDNalMtDiRL47QECZrmEZsSBEoGiihBWeYEAYgEJFFbikPS
+iJin2T0MZE4EdpigaqiGLsZFe/+B/599OxflJGSXVzhcgQrJQ3QGUGAkhSQJBTAK
+IXiAdmizgAKI0AVmMzA5LRpWEoehaqEqQc9gPUkeIYpUW77TnmBSHXlO8d9MVpvm
+0CTNjF7zHA6rPdHDdhRbPfBtUDQ+EjKKqkVGs0SMQmizq5oFSyQQUnKoHmWCJQiK
+ZQmKi8NgkVW1QaPqQTAcy+NoefrAQiTJcuwbLCOyELCQBpQko9HIPM8zQCFFWZEE
+muMlhhABlCkoAl4SWF4BtIwLJMkrMoCYJ9tbKGQig3wCE9K0qyYLcDhtECsJ3LeE
+8tF5+esi9dE+w2HgxaUt7rtZ3V/MP/5/vks8n08XGLD0ccUghPxNXxmBaaGlzk7r
+horDa+sCCtrn7qWoK16tBvaQS1k5JV9Vm0jypboPDeNlTNXOEfz+srHgRuusuSXy
+s/mEdxZm86oPZKcsULsX2s6D3F+fuuD2+/zL3K7YiuXD38ZP1nFT+qQz+k0Bvs+5
+3kyaeJCT8/qDLQEDEen3Vyva+vlDVSdiwnpCultc3nhzdOVZv+CkzvWbU65mxr7c
+2vBM4ZEbd1a2E06x9+3qnmL3wd6Z7+uf35WQHPFdZ3n0WpOWERKzn0lr3u3+g+3P
+ONA/F1T2xDVz+aEfB2pn/ancNdsvfNp8dfp2L9tFuo53lJxu/DrYOLHuJ3PdpBCe
+3WcKrYi6vq4+/6NAeYAa3etLbwXNg3+eGBnf6x1c3nqz6emT4333IsKmfE5ZO47t
+qcrWu7onPugfbUumyH3L/fzTY6y8+6b6/sfTUYaZI6eHmvK4H0ZXONMDh35+7dnY
+243b+9IO1p9l35uo6bn7sKVae3c8ZVtLyWCne3hnZuSVrtqLVYZpl214sz4pdW4s
+veHYuezf8I2rGw2f2OWOyvYEMhNL3lJmCEltjbVUPKzdhK16IViKv5Vcc00Nb8rf
+EJMV+ssrg679YUkzNUXa74HA/c2dv0yxmm9GdtmqvkrXSvLkuaPOuOOH+9uGznSe
+avKKjL90a2pWu355clnb7I3LqeeDSr0K9oR37wL6fwA=
+=hRKF
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/mllaguno
+
+==================================================================
+
