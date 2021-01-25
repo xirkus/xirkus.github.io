@@ -9,15 +9,10 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run:
-          name: Install node@v15.6.0
-          command: |
-            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-            echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
-            node -v
-            nvm install v15.6.0
-            nvm alias default v15.6.0
-            node -v
+      - run: |
+          echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+          echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+      - run: nvm install v15.6.0 && nvm alias default v15.6.0 && node -v
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7.2'
