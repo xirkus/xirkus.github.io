@@ -17,6 +17,7 @@ jobs:
       - ruby/install:
           version: '2.7.2'
       - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler && bundle install"
+      - run: yarn add jquery
       - run: bundle exec jekyll build
       - run: rm -R ./_site/node_modules
       - run: bundle exec htmlproofer ./_site --only-4xx --allow-hash-href --assume-extension --check-opengraph --url-ignore "feed.xml"
