@@ -2,7 +2,7 @@
 layout: post
 title: "Synology Self-signed Certificate How-to"
 description: "Using the Synology NAS Certificates to Provision Private/Locally Scoped Self-signed SSL Certificates"
-tags: [yubikey, security, github]
+tags: [synology, security]
 ---
 
 It's possible to use a Synology Diskstation's Certificate generation functionality to create a set of privately scoped (non-FQDN) self-signed SSL certificates that you can use to provision internal network services so that connecting to them does not cause your browser to throw warning messages (or in the case of Chrome, prevent you from connecting at all).
