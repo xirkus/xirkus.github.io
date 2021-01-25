@@ -12,12 +12,12 @@ jobs:
       - run: |
           echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
           echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
-      - run: nvm install v15.6.0 && nvm alias default v15.6.0 && node -v
+      - run: nvm install v15.6.0 && nvm alias default v15.6.0 && node -v && npm install --global yarn
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7.2'
       - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler && bundle install"
-      - run: yarn add jquery
+#      - run: yarn add jquery
       - run: bundle exec jekyll build
       - run: rm -R ./_site/node_modules
       - run: bundle exec htmlproofer ./_site --only-4xx --allow-hash-href --assume-extension --check-opengraph --url-ignore "feed.xml"
