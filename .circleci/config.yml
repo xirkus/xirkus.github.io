@@ -3,18 +3,21 @@ version: 2.1
 
 orbs:
   ruby: circleci/ruby@1.1.2
-  node: circleci/node@4.1.0
 
 jobs:
   build:
     machine: true
     steps:
       - checkout
+      - run:
+          name: Install node@v15.6.0
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm" [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v15.6.0
+            nvm alias default v15.6.0
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7.2'
-      - node/install:
-          node-version: 'v15.6.0'
       - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler"
       - run: bundle exec jekyll build
       - run: rm -R ./_site/node_modules
