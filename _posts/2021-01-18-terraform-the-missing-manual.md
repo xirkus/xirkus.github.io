@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Security Adventures 1"
-description: "How to get yubikey+gpg+ssh+gitbhub working on MacOS"
+title: "Terraform - The Missing Manual"
+description: "Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it's usage for your project."
 tags: [terraform, aws, hashicorp]
 ---
 ![Terrafrom Logo](https://www.terraform.io/assets/images/og-image-large-e60c82fe.png)
