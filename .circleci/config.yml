@@ -18,13 +18,8 @@ jobs:
       - ruby/install:
           version: '2.7.2'
       - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler && bundle install"
-      - run: bundle exec jekyll build
-      - run: bundle exec htmlproofer ./_site --only-4xx --allow-hash-href --assume-extension --check-opengraph --url-ignore "feed.xml"
-
-#      - run: sudo apt update && sudo apt install nodejs
-#      - run: /bin/bash --login -c "nvm install v15.6.0"
-#      - run: /bin/bash --login -c "nvm use 15.6.0 && npm run setup"
-#      - run: /bin/bash --login -c "nvm use 15.6.0 && npm run publish"
+      - run: /bin/bash --login -c "npm run setup"
+      - run: /bin/bash --login -c "npm run publish"
 
 workflows:
   deploy-site:
