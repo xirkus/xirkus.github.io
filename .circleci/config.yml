@@ -8,6 +8,9 @@ jobs:
   build:
     machine: true
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:/6lmu9CReiESEYUo7awnCwHF8Xy4S2CDiipH+78GDwo"
       - checkout
       - run: |
           echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
