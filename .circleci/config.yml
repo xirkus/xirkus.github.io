@@ -29,4 +29,7 @@ jobs:
 workflows:
   deploy-site:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              ignore: gh-pages
