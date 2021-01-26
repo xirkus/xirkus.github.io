@@ -20,7 +20,7 @@ jobs:
       - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler"
       - run: /bin/bash --login -c "npm run setup"
       - run: git config --global user.email "${GITHUB_EMAIL}"
-      - run: git config --global user.name "${GITHUB_USERNAME}"
+      - run: git config --global user.name "${GITHUB_USER}"
       - run: /bin/bash --login -c "npm run publish"
 
 workflows:
