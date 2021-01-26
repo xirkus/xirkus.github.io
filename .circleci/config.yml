@@ -17,8 +17,10 @@ jobs:
       - run: "command curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
       - ruby/install:
           version: '2.7.2'
-      - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler && bundle install"
+      - run: /bin/bash --login -c "rvm --default use 2.7.2 && gem install bundler"
       - run: /bin/bash --login -c "npm run setup"
+      - run: git config --global user.email "${GITHUB_EMAIL}"
+      - run: git config --global user.name "${GITHUB_USERNAME}"
       - run: /bin/bash --login -c "npm run publish"
 
 workflows:
