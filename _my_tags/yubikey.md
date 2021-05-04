@@ -1,4 +1,0 @@
----
-slug: yubikey
-name: Yubikey
----

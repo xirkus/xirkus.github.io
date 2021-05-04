@@ -1,20 +1,34 @@
----
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" xmlns:dc="https://purl.org/dc/elements/1.1/">
   <channel>
-    <title>{{ site.name | xml_escape }}</title>
-    <description>{% if site.description %}{{ site.description | xml_escape }}{% endif %}</description>
-    <link>{{ site.url }}</link>
-    <atom:link href="{{ page.path | absolute_url }}" rel="self" type="application/rss+xml" />
-    {% for post in site.posts limit:10 %}
+    <title>StrayLight - Musings from the Edge</title>
+    <description></description>
+    <link>https://xirkus.github.io</link>
+    <atom:link href="https://xirkus.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
-        <description>{{ post.description | xml_escape }}</description>
-        <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
-        <link>{{ post.url | absolute_url }}</link>
-        <guid isPermaLink="true">{{ post.url | absolute_url }}</guid>
+        <title>Terraform - The Missing Manual</title>
+        <description>Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it's usage for your project.</description>
+        <pubDate>Mon, 18 Jan 2021 00:00:00 +0000</pubDate>
+        <link>https://xirkus.github.io/posts/terraform-the-missing-manual</link>
+        <guid isPermaLink="true">https://xirkus.github.io/posts/terraform-the-missing-manual</guid>
       </item>
-    {% endfor %}
+    
+      <item>
+        <title>Security Adventures 1</title>
+        <description>How to get yubikey+gpg+ssh+gitbhub working on MacOS</description>
+        <pubDate>Wed, 04 Nov 2020 00:00:00 +0000</pubDate>
+        <link>https://xirkus.github.io/posts/security-adventures-1</link>
+        <guid isPermaLink="true">https://xirkus.github.io/posts/security-adventures-1</guid>
+      </item>
+    
+      <item>
+        <title>Synology Self-signed Certificate How-to</title>
+        <description>Using the Synology NAS Certificates to Provision Private/Locally Scoped Self-signed SSL Certificates</description>
+        <pubDate>Tue, 27 Oct 2020 00:00:00 +0000</pubDate>
+        <link>https://xirkus.github.io/posts/synology-self-signed-cert-howto</link>
+        <guid isPermaLink="true">https://xirkus.github.io/posts/synology-self-signed-cert-howto</guid>
+      </item>
+    
   </channel>
 </rss>

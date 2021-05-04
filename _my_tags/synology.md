@@ -1,4 +1,0 @@
----
-slug: synology
-name: Synology
----

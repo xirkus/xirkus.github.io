@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>StrayLight - Musings from the Edge | Security Adventures 1</title>
+  <meta name="description" content="How to get yubikey+gpg+ssh+gitbhub working on MacOS">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Security Adventures 1">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://xirkus.github.io/posts/security-adventures-1">
+  <meta property="og:description" content="How to get yubikey+gpg+ssh+gitbhub working on MacOS">
+  <meta property="og:site_name" content="StrayLight - Musings from the Edge">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://xirkus.github.io/posts/security-adventures-1">
+  <meta name="twitter:title" content="Security Adventures 1">
+  <meta name="twitter:description" content="How to get yubikey+gpg+ssh+gitbhub working on MacOS">
+
+  
+    <meta property="og:image" content="https://xirkus.github.io/assets/og-image-fb95251ceba6fe6900758797f54d7e5436006b398be2da456030c7af5265a59f.png">
+    <meta name="twitter:image" content="https://xirkus.github.io/assets/og-image-fb95251ceba6fe6900758797f54d7e5436006b398be2da456030c7af5265a59f.png">
+  
+
+  <link href="https://xirkus.github.io/feed.xml" type="application/rss+xml" rel="alternate" title="StrayLight - Musings from the Edge Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-dark-11327753546b2135c989eee5cd83497a2734b702928d016839d795f6c706e3d5.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-dark-d161409442b7e523089f24d08d0a55951549ece7504207c376d53b020713494d.png">
+      <link rel="stylesheet" type="text/css" href="/assets/dark-9cd1dd9848c994b7861828f4d4cc1f0586ad62b95537e097798620bbdabc3b40.css">
+    
+
+  
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="StrayLight - Musings from the Edge">StrayLight - Musings from the Edge</a>
+  <ul class="header-links">
+    
+      <li>
+        <a href="/about" title="About me">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-about">
+  <use href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about" xlink:href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://twitter.com/xirkus" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xirkus" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://stackoverflow.com/users/15160382" rel="noreferrer noopener" target="_blank" title="Stack Overflow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-stackoverflow">
+  <use href="/assets/stackoverflow-12ba59133ed134d26156d30f095e0222b6039395cf26f2fab0cb6ce3ef2db00d.svg#icon-stackoverflow" xlink:href="/assets/stackoverflow-12ba59133ed134d26156d30f095e0222b6039395cf26f2fab0cb6ce3ef2db00d.svg#icon-stackoverflow"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://keybase.io/mllaguno" rel="noreferrer noopener" target="_blank" title="Keybase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-keybase">
+  <use href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase" xlink:href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://hub.docker.com/r/mllaguno" rel="noreferrer noopener" target="_blank" title="Docker Hub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-docker">
+  <use href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker" xlink:href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:mel.llaguno@protonmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+  </ul>
+</nav>
+
+
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>Security Adventures 1</h1>
+            <p>How to get yubikey+gpg+ssh+gitbhub working on MacOS</p>
+            <div class="article-list-footer">
+  <span class="article-list-date">
+    November 4, 2020
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      25 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/yubikey" title="See all posts with tag 'Yubikey'">Yubikey</a>
+    
+      
+      <a href="/tag/security" title="See all posts with tag 'Security'">Security</a>
+    
+      
+      <a href="/tag/github" title="See all posts with tag 'GitHub'">GitHub</a>
+    
+  </div>
+</div>
+          </header>
+
+          <div class="article-content">
+            <p>I’ve spent the day trying to get this setup working with GitHub and given the number of gotcha’s I encountered, it seemed like a good idea to document how I finally got this working with as few hacks as possible. There’s a lot of documentation out there (some of it old and misleading) and committing here for posterity will help me remember this when I inevitably need to do this again.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p><strong>Passwords are simply not enough these days.</strong> Regardless of the company, breaches (and the associated Personally Identifiable Information harvested) are a matter of <strong><em>not if, but when</em></strong>. There are a number of things you can do to protect yourself, but being on the tin-foil-hat side of paranoia, means there are a few Commandents that I adhere to (and recommend for other folks)[Insert link to Fight Club Rules for the Secure Internet].</p>
+
+<p>That being said, if you use 2-factor authentication and have committed to using a hardware token such as the Yubikey, then you’re already ahead of the curve. The problem is that while this has been broadly adopted in enterprise, it still feels like the bleeding edge. It doesn’t help that the Yubikey documentation and tools are out-of-date and possibly not fully supported on MacOS. This doc is to address this gap and bring awareness to the somewhat-mainstream.</p>
+
+<h1 id="the-yubikey-5"><a href="https://support.yubico.com/hc/en-us/articles/360013708340-YubiKey-5-Nano">The Yubikey 5</a></h1>
+
+<p><img src="https://resources.yubico.com/53ZDUYE6/as/qd4ajv-3kfhzk-fqbarm/YubiKey_5-Series-Family-Overhead.auto?width=400&amp;height=326&amp;position=5" alt="The Yubikey 5" /></p>
+
+<p>The instructions below are for the Yubikey 5 (which is what I have). <strong><em>If you have an older version of the key, the instructions below may not work for you and you may want to consider upgrading to a newer version.</em></strong></p>
+
+<h2 id="relevant-features">Relevant Features</h2>
+
+<ul>
+  <li>There are USB-C and USB-A versions of this key which make it compatible with most devices. <strong>CAVEAT:</strong> I don’t have an NFC version, so have not tested to see if these instructions work on these keys as well. If you have one and try these instructions (with or without success), post your experiences below in the comments.</li>
+  <li>Supports FIDO / U2F / PIV-compatible Smart Card / OpenPGP. It’s these last two that we’ll focus on here as these are relevant to getting the key to provide ssh authentication credentials to a service like GitHub.
+    <ul>
+      <li>As of writing, <a href="https://www.openssh.com/txt/release-8.2">FIDO/U2F support for OpenSSH is from 8.2+</a>. MacOS currently ships with <code class="highlighter-rouge">OpenSSH_8.1p1, LibreSSL 2.7.3</code>, so won’t be covering this.</li>
+    </ul>
+  </li>
+  <li>Support for the following type of cryptographic keys - <code class="highlighter-rouge">RSA 2048, RSA 4096 (PGP), ECC p256, ECC p384</code>.
+    <ul>
+      <li>Older versions of the key may not have full support for the strongest/newest ciphers. For example the neo 4 was limited to <code class="highlighter-rouge">RSA 2048</code> and was affected by this bug - <a href="https://www.yubico.com/support/security-advisories/ysa-2017-01/">YSA-2017-01  – Infineon weak RSA key generation</a></li>
+    </ul>
+  </li>
+  <li>Out-of-the box support for a lot of services which can use one-time-passwords (OTP) generated by the key.</li>
+</ul>
+
+<h1 id="openssh-keys-vs-openpgp-keys">OpenSSH Keys vs. OpenPGP Keys</h1>
+
+<h2 id="given-that-both-systems-use-keys-why-cant-you-use-one-with-the-other">Given that both systems use keys, why can’t you use one with the other?</h2>
+
+<p><strong>TL;DR - OpenSSH was designed to secure a stream of network communication vs. OpenPGP which was designed to encrypt the contents of a message.</strong></p>
+
+<p>Usually, when you first configure OpenSSH, you generate a keypair (a private key + a public key). This keypair is then used to access remote systems by transferring the public key to the remote machine and disabling <code class="highlighter-rouge">PasswordAuthentication</code> in the <code class="highlighter-rouge">/etc/ssh/sshd_config</code> file. Keys are usually stored in the local or remote machine’s <code class="highlighter-rouge">~/.ssh</code> directory. The <code class="highlighter-rouge">~/.ssh/authorized_keys</code> file on the remote machine contains the public key of the generated key pair which is used for authentication purposes.</p>
+
+<p>OpenPGP on the other hand is designed as a general purpose decentralized public key infrastructure (PKI) for communicating encrypted messages which may be sent over a different network protocol (such as SMTP for mail, FTP, or even SSH). Instead of a single keypair, OpenPGP also allows for the generation of subkeys which can have specific capabilities enabled/disabled. This allows for the generation of purpose specific keys which are associated with a master key. We’ll use this technique to generate subkey pairs for authentication, encryption, and signing.</p>
+
+<p><strong><em>The trick for bridging this gap is to allow OpenPGP to act as an authentication secrets provider for OpenSSH.</em></strong></p>
+
+<h2 id="ok-so-where-do-i-start">OK. So where do I start?</h2>
+
+<p><img src="https://protonmail.com/images/media/logos/protonmail-logo-dark.png" alt="Protonmail" /></p>
+
+<p>We begin by creating an OpenPGP keypair. On of the key features of this keypair is the associated email address. In other words, <strong>every key MUST be associated with a valid email address</strong>*. I use <a href="https://protonmail.com">Protonmail</a> for this purpose as it provides encryption at for all of my email messages and it supports generating OpenPGP keys of various strengths (<code class="highlighter-rouge">RSA2048, RSA4096, EdDSA256</code>). Previously, Protonmail only supported <code class="highlighter-rouge">RSA2048</code> keys, but now includes newer/stronger ciphers which have various security/performance trade-offs.</p>
+
+<p>I began generating an RSA4096 key using these instructions - <a href="https://protonmail.com/support/knowledge-base/pgp-key-management/">Key management</a>.</p>
+
+<p>If you have a different email address you would like to create a keypair for, you can also generate a key using the <code class="highlighter-rouge">gpg</code> command line (which you can install with <a href="https://formulae.brew.sh/formula/gnupg">Homebrew</a> or alternatively, install <a href="https://gpgtools.org">GPGSuite</a>).</p>
+
+<p><strong>NOTE:</strong> The generated key must be protected by a password. You’ll need this later for when you import the key into your OpenPGP keychain.</p>
+
+<h3 id="why-choose-rsa4096-for-the-openpgp-key-cipher">Why choose <code class="highlighter-rouge">RSA4096</code> for the OpenPGP key cipher?</h3>
+
+<p>It seems that there are flaws within elliptic curve algorithms that suggest it’s better to go with the slower, but proven RSA cipher. For more background see - <a href="https://blog.trailofbits.com/2020/06/11/ecdsa-handle-with-care/">ECDSA: Handle with Care</a></p>
+
+<p>Also, RSA is well supported by the Yubikey 5 as well as Github ;-)</p>
+
+<h3 id="why-dont-we-generate-an-openpgp-key-on-the-yubikey-instead-of-creating-one-externally">Why don’t we generate an OpenPGP key on the Yubikey instead of creating one externally?</h3>
+
+<p>You can interact directly with the OpenPGP application on the Yubikey 5 to generate an OpenPGP keypair, but there are a number of implications when doing so:</p>
+
+<ol>
+  <li>The private key remains solely on the device which means not being able to back up the private key (as only a stub is exported).</li>
+  <li>In the event you lose of your physical key, you’re pretty much shit out of luck :( . If you’ve seen the size of the Yubikey 5c, you’ll know how real of a possibility it actually is…</li>
+</ol>
+
+<p>Since I’m re-purposing my Protonmail OpenPGP key, I’ll be showing how to import this into the Yubikey.</p>
+
+<h1 id="the-yubikey">The Yubikey</h1>
+
+<p>There are a number of articles in the dev/support sections of the Yubico site which would lead you to suspect that the tools they provide support configuration of OpenPGP on the Yubikey 5, but having put them to the test, I would say that the docs are <em>woefully</em> inadequate. To save you time (and future me from wasting more of it), I’ve documented the limitations here.</p>
+
+<h2 id="yubikeys-default-state-of-insecurity">Yubikey’s default state of insecurity</h2>
+
+<p>Strangely, when I started down this rabbit hole, I expected that a company focused on security solutions would focus their user experience around, you know - “security”. Furthermore, the defaults for configuring the PIV functionality provide defaults which are easily found on the interwebs :(</p>
+
+<p>For the record, the default PINs associated with the PIV functionality are:</p>
+
+<ul>
+  <li>default PIN: <code class="highlighter-rouge">123456</code></li>
+  <li>admin PIN: <code class="highlighter-rouge">12345678</code> (<strong><em>this should really be referred to as the Pin Unlock Key</em></strong>)</li>
+  <li>management key:<code class="highlighter-rouge">010203040506070801020304050607080102030405060708</code></li>
+</ul>
+
+<p>What’s missing is a walk-through which should do the following:</p>
+
+<ol>
+  <li>Provide installation instructions to download the latest version of the Yubikey Manager. Bonus points if previous versions are aware they are out-of-date and provide rolling updates.</li>
+  <li>Provide a warning when you first insert your Yubikey and the Manager application recognizes it to provide new/secure PINs to override these known defaults.</li>
+  <li>Provide a means to configuring the retries counts for the various PINs (preferrably without wiping any already configured PINs)</li>
+  <li>Provide a means for verifying that the PIN changes have been persisted to the device.</li>
+</ol>
+
+<blockquote>
+  <p><strong>WARNING</strong>* <strong><em>By default, the number of retries for PIN entry is 3. If you fail to provide the correct PIN, then that type of PIN is locked. You will need to use the admin PIN/PUK to unlock the device. In the PUK is entered incorrectly more than the number of configured retries, the device is locked and must be reset back to the factory defaults (resulting in the loss of all data/keys on the device).</em></strong>.</p>
+</blockquote>
+
+<p>Here are some background resources provided by Yubico regarding these PINs/keys:</p>
+
+<ul>
+  <li><a href="https://developers.yubico.com/yubikey-piv-manager/PIN_and_Management_Key.html">PIN and Management Key</a></li>
+  <li><a href="https://developers.yubico.com/PIV/Introduction/Admin_access.html">Accessing administrative functions</a> &lt;- Note that this matrix is the ONLY place which documents that changing the retries count will RESET THE PINS TO THE DEFAULTS. Why dear God?</li>
+  <li><a href="https://developers.yubico.com/PIV/Introduction/YubiKey_and_PIV.html">PIV-enabled YubiKeys</a> &lt;- Mentions the PIVv default PINs/keys.</li>
+  <li><a href="https://gist.github.com/pkirkovsky/c3d703633effbdfcb48c">pkirkovsky/yubikey-reset.sh</a> &lt;- User supplied way of resetting the Yubikey to the factory defaults using gpg. Not included in the official Yubico documentation.</li>
+</ul>
+
+<blockquote>
+  <p><strong>NOTE:</strong> As we are not generating the OpenPGP keys on the device, but importing our external keys generated previously, we will NOT be using the PIV Attestation feature.</p>
+</blockquote>
+
+<h2 id="yubikey-manager">Yubikey Manager</h2>
+
+<p>I started out with an older version of this tool which did not have support for the Personal Identity Verification (PIV) functionality required to enable certain Smart Card functionality to import the various OpenPGP keys we need for our use case. Unfortunately, documentation using this tools is sparse and the terminology used for the various certificate management stores differs from how <code class="highlighter-rouge">gpg</code> refers to it. YMMV.</p>
+
+<blockquote>
+  <p><strong>NOTE:</strong> I was able to configure full functionality <em>without</em> using this application, but I noticed that although my key is configured with the certificates, this tool does <strong><em>NOT</em></strong> recognize it as such.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>WARNING:</strong> When configuring another Yubikey, I thought to give this application a spin. I set the PINs and generated a new Management Key, but when attempting to use these settings with <code class="highlighter-rouge">ykman</code> the PINs were <strong>unrecognized</strong>. YMMV, but I would recommend setting them both ways to be sure. Also see the warning regarding Management Key generation below. Bad Yubico.</p>
+</blockquote>
+
+<h2 id="ykman"><a href="https://developers.yubico.com/yubikey-manager/">ykman</a></h2>
+
+<p>Searching the interwebs for how to enable certificates on the Yubikey brings up a lot of documents which refer to this CLI utility. As of writing, this tool was unstable, resulting in subsequent commands failing with the following error:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">Usage: ykman [OPTIONS] COMMAND [ARGS]...
+Try "ykman -h" for help.
+Error: Failed connecting to YubiKey 5 [OTP+FIDO+CCID]. Make sure the application have the required permissions.
+</span></code></pre></div></div>
+
+<p>Not exactly informative… For example, attempting to use the openpgp functionality would repeatedly result in the above message, despite various <code class="highlighter-rouge">info</code> commands returing successfully :(</p>
+
+<blockquote>
+  <p><strong>NOTE:</strong> This failure may be due to locking of the <code class="highlighter-rouge">scdaemon</code> resposible for communicating with the Yubikey’s Smart Card functionality, but I didn’t try to get to the bottom of it either…</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>UPDATE 18.10.2020:</strong> The response from Yubico Support - <code class="highlighter-rouge">The overall issue I believe you are running into is one we've seen on macOS specifically with YubiKey functions that use its CCID (OpenPGP, PIV, and OATH). Essentially, intermittently on macOS, when you attempt to access these functions, they will not respond, and the YubiKey must be reinserted (sometimes multiple times) until things start working again. The intermittent nature has made it difficult for us to resolve, but from what we have uncovered, it doesn't seem to be an issue with our products.</code> Not sure I agree with the last statement though.</p>
+</blockquote>
+
+<p>Here’s the version info reported for the tool (which was installed with Homebrew):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman --version
+YubiKey Manager (ykman) version: 3.1.1
+Libraries:
+    libykpers 1.20.0
+    libusb 1.0.23
+</span></code></pre></div></div>
+
+<h3 id="resetting-the-pins-using-ykman-piv">Resetting the PINs using <code class="highlighter-rouge">ykman piv</code></h3>
+
+<p>Here’s the man page for this sub-command:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman piv 
+Usage: ykman piv [OPTIONS] COMMAND [ARGS]...
+
+  Manage PIV Application.
+
+  Examples:
+
+    Generate an ECC P-256 private key and a self-signed certificate in
+    slot 9a:
+</span><span class="gp">    $</span><span class="w"> </span>ykman piv generate-key <span class="nt">--algorithm</span> ECCP256 9a pubkey.pem
+<span class="gp">    $</span><span class="w"> </span>ykman piv generate-certificate <span class="nt">--subject</span> <span class="s2">"yubico"</span> 9a pubkey.pem
+<span class="go">
+    Change the PIN from 123456 to 654321:
+</span><span class="gp">    $</span><span class="w"> </span>ykman piv change-pin <span class="nt">--pin</span> 123456 <span class="nt">--new-pin</span> 654321
+<span class="go">
+    Reset all PIV data and restore default settings:
+</span><span class="gp">    $</span><span class="w"> </span>ykman piv reset
+<span class="go">
+Options:
+  -h, --help  Show this message and exit.
+
+Commands:
+  attest                 Generate a attestation certificate for a key.
+  change-management-key  Change the management key.
+  change-pin             Change the PIN code.
+  change-puk             Change the PUK code.
+  delete-certificate     Delete a certificate.
+  export-certificate     Export a X.509 certificate.
+  generate-certificate   Generate a self-signed X.509 certificate.
+  generate-csr           Generate a Certificate Signing Request (CSR).
+  generate-key           Generate an asymmetric key pair.
+  import-certificate     Import a X.509 certificate.
+  import-key             Import a private key.
+  info                   Display status of PIV application.
+  read-object            Read arbitrary PIV object.
+  reset                  Reset all PIV data.
+  set-ccc                Generate and set a CCC on the YubiKey.
+  set-chuid              Generate and set a CHUID on the YubiKey.
+  set-pin-retries        Set the number of PIN and PUK retries.
+  unblock-pin            Unblock the PIN.
+  write-object           Write an arbitrary PIV object.
+</span></code></pre></div></div>
+
+<blockquote>
+  <p><strong>NOTE:</strong> Notice that there are <em>only</em> two <code class="highlighter-rouge">change</code> commands - one for the PUK/admin PIN, and a “PIN”. This man page is unhelpful with regards to specifying which of the PINs can be changed. <strong><em>For the record, <code class="highlighter-rouge">change-pin</code> command changes the Default PIN. See below.</em></strong></p>
+</blockquote>
+
+<h4 id="order-is-important-set-the-number-of-pin-retries-first">Order is important. Set the number of PIN retries first!</h4>
+
+<p>For some reason, if you reset the number of retries, you will inadvertently reset the Default PIN and the PUK PIN (probably due to how these are stored on the device). You should do this first in order to prevent you from locking yourself out/disabling the device. By default you are allow 3 retries for either PIN (which doesn’t provide much of a margin of error). I set mine to 5 (<strong>NOTE:</strong> I use the Default PIN / Management Key from above):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman piv set-pin-retries --help
+Usage: ykman piv set-pin-retries [OPTIONS] PIN-RETRIES PUK-RETRIES
+
+  Set the number of PIN and PUK retries. NOTE: This will reset the PIN and PUK to their factory defaults.
+
+Options:
+  -m, --management-key TEXT  The management key.
+  -P, --pin TEXT             PIN code.
+  -f, --force                Confirm the action without prompting.
+  -h, --help                 Show this message and exit.
+mel@zed protonmail % ykman piv set-pin-retries 5 5
+Enter PIN: 
+Enter a management key [blank to use default key]: 
+WARNING: This will reset the PIN and PUK to the factory defaults!
+Set PIN and PUK retry counters to: 5 5? [y/N]: y
+Default PINs are set.
+PIN:    123456
+PUK:    12345678
+</span></code></pre></div></div>
+
+<h4 id="setting-the-adminpuk-pin">Setting the Admin/PUK PIN</h4>
+
+<p>First order of business is to set a PUK so that you can unlock the device should should accidentally exceed the PIN retries. It’s unhelpful that the Yubico documentation refers to this PIN using two different terms (PUK/admin). <strong>The are one and the same :( . Also note the inconsistent use of the <code class="highlighter-rouge">-p/-P</code> option for specifying the PIN argument for the commands.</strong>
+(<strong><em>We use the default admin PIN here (12345678) for the device and NNNNNNNN as the new PUK PIN</em></strong>):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman piv change-puk -p 12345678 -n NNNNNNNN
+New PUK set.
+</span></code></pre></div></div>
+
+<p>Unfortunately, the tool provides no mechanism for verifying that the change has been applied :(</p>
+
+<h4 id="setting-the-default-pin">Setting the Default PIN</h4>
+
+<p>You can also change the Default PIN using <code class="highlighter-rouge">ykman</code>. (<strong><em>replace NNNNNNNN a the new Default PIN</em></strong>):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman piv change-pin -P 123456 -n NNNNNNNN
+New PIN set.
+</span></code></pre></div></div>
+
+<h4 id="pin-constraints">PIN Constraints</h4>
+
+<p>It may not be clear that PINs can be comprised of the following characteristics:</p>
+
+<ul>
+  <li>shoud not contain all or part of the user’s account name.</li>
+  <li>can contain characters from <strong>three</strong> of the following <strong>four</strong> categories:
+    <ul>
+      <li>English uppercase characters (A through Z)</li>
+      <li>English lowercase characters (a through z)</li>
+      <li>Base 10 digits (0 through 9)</li>
+      <li>Nonalphanumeric characters (e.g., !, $, #, %)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>There are additional <a href="https://developers.yubico.com/yubikey-piv-manager/PIN_and_Management_Key.html">Considerations when using a PIN for PIV management</a>, most notably:</p>
+
+<blockquote>
+  <p>There are certain security and usability considerations which should be taken into account when using the PIN for PIV management, instead of a Management Key. The way this feature works, is that a Management Key is still used, but it is cryptographically derived from your PIN by the YubiKey PIV Manager, behind the scenes. One implication of this is that the Management Key changes whenever you change your PIN, and it is therefore crucial that you ONLY change your PIN using the YubiKey PIN Manager. Changing it using an external tool will render the YubiKey PIV Manager unable to derive the Management Key.</p>
+</blockquote>
+
+<h4 id="setting-the-management-key">Setting the Management Key</h4>
+
+<p>You can change the Management Key using the following commands (where a new key is automatically generated and protected with the PIN. (<strong><em>replace XXXXXXXX with the Default PIN</em></strong>).</p>
+
+<blockquote>
+  <p><strong>WARNING:</strong> As per the previous section, <strong><em>DO NOT</em></strong> attempt to specify your own Management Key as it is cryptographically derived from your PIN).</p>
+</blockquote>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman piv change-management-key -P XXXXXXXX -g -p 
+</span></code></pre></div></div>
+<blockquote>
+  <p><strong>WARNING:</strong> This command for some reason does not entirely work and <strong><em>WILL NOT DISPLAY THE NEWLY GENERATED MANAGEMENT KEY.</em></strong> You may need to use the Yubikey Manager application to set this correctly.</p>
+</blockquote>
+
+<h3 id="enabling-touch-for-openpgp-on-the-yubikey">Enabling touch for OpenPGP on the Yubikey</h3>
+
+<p>After fiddling with the <code class="highlighter-rouge">ykman</code> tool, I was able to enable specific openpgp functionality by using the following commands. A few things to note:</p>
+
+<ul>
+  <li>Interactive mode blocks on entry of the carriage return (it won’t accept it for some strange reason)</li>
+  <li>The sub-command you need is <code class="highlighter-rouge">set-touch</code> <strong>NOT</strong> <code class="highlighter-rouge">touch</code> as some older documentation refers to.</li>
+</ul>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman openpgp set-touch --help
+Usage: ykman openpgp set-touch [OPTIONS] KEY POLICY
+
+  Set touch policy for OpenPGP keys.
+
+  KEY     Key slot to set (sig, enc, aut or att).
+  POLICY  Touch policy to set (on, off, fixed, cached or cached-fixed).
+
+  The touch policy is used to require user interaction for all operations using the private key on the YubiKey. The touch policy is set indivdually for each key slot. To see the current touch policy, run
+
+</span><span class="gp">      $</span><span class="w"> </span>ykman openpgp info
+<span class="go">
+  Touch policies:
+
+  Off (default)   No touch required
+  On              Touch required
+  Fixed           Touch required, can't be disabled without a full reset
+  Cached          Touch required, cached for 15s after use
+  Cached-Fixed    Touch required, cached for 15s after use, can't be disabled
+                  without a full reset
+
+Options:
+  -a, --admin-pin TEXT  Admin PIN for OpenPGP.
+  -f, --force           Confirm the action without prompting.
+  -h, --help            Show this message and exit.  
+</span></code></pre></div></div>
+
+<p>By default, the OpenPGP touch policies are disabled. You can see that by running the following command:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman openpgp info            
+OpenPGP version: 2.1
+Application version: 5.1.0
+
+PIN tries remaining: 3
+Reset code tries remaining: 3
+Admin PIN tries remaining: 3
+
+Touch policies
+Signature key           Off
+Encryption key          Off
+Authentication key      Off
+</span></code></pre></div></div>
+
+<blockquote>
+  <p><strong>WARNING:</strong> Be aware of the number of retries which can potentially lock the device if you fail to provide the correct PIN.</p>
+</blockquote>
+
+<p>You can enable each of these functions non-interactively by using the following commands (<strong><em>replace XXXXXXXX with your admin/PUK PIN for the device</em></strong>):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman openpgp set-touch enc on -a XXXXXXXX -f
+% ykman openpgp set-touch aut on -a XXXXXXXX -f
+% ykman openpgp set-touch sig on -a XXXXXXXX -f
+</span></code></pre></div></div>
+
+<p>You can verify that these touch settings have been enabled by running the <code class="highlighter-rouge">ykman openpgp info</code> again:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ykman openpgp info                           
+OpenPGP version: 2.1
+Application version: 5.1.0
+
+PIN tries remaining: 3
+Reset code tries remaining: 3
+Admin PIN tries remaining: 3
+
+Touch policies
+Signature key           On
+Encryption key          On
+Authentication key      On
+</span></code></pre></div></div>
+
+<h2 id="yubico-priv-tool"><a href="https://developers.yubico.com/yubico-piv-tool/">yubico-priv-tool</a></h2>
+
+<p>I found additional references to this utility which looked like it would solve my initial configuration issues. Like <code class="highlighter-rouge">ykman</code> above, permission errors are reported when attempting to use this tool.</p>
+
+<p>Here’s the version information from the version of this tool I attempted to use:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% yubico-piv-tool --version
+yubico-piv-tool 2.1.1
+</span></code></pre></div></div>
+
+<h3 id="verifying-pin-retry-changes">Verifying PIN retry changes</h3>
+
+<p>One useful application of <code class="highlighter-rouge">yubico-priv-tool</code> was to verify the change in PIN retries.</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% yubico-piv-tool -astatus                                                    
+Version:	5.1.0
+Serial Number:	086XXXXX
+CHUID:	XXXX
+CCC:	XXXX
+PIN tries left:	5
+</span></code></pre></div></div>
+
+<h1 id="the-secret-sauce---gpg">The Secret Sauce - <code class="highlighter-rouge">gpg</code></h1>
+
+<p>There are a number of articles which I used as a guide for determining what actually works, here are a few of them:</p>
+
+<ul>
+  <li><a href="https://gist.github.com/artizirk/d09ce3570021b0f65469cb450bee5e29">OpenPGP SSH access with Yubikey and GnuPG</a></li>
+  <li><a href="https://support.yubico.com/hc/en-us/articles/360013790259-Using-Your-YubiKey-with-OpenPGP">Using Your YubiKey with OpenPGP</a></li>
+  <li><a href="https://developers.yubico.com/PGP/Importing_keys.html">PGP - Introduction</a></li>
+  <li><a href="https://florin.myip.org/blog/easy-multifactor-authentication-ssh-using-yubikey-neo-tokens">Easy multifactor authentication for SSH using YubiKey NEO tokens</a></li>
+  <li><a href="https://incenp.org/notes/2015/gnupg-for-ssh-authentication.html">Using GnuPG (2.1) for SSH authentication</a></li>
+  <li><a href="https://gist.github.com/ixdy/6fdd1ecea5d17479a6b4dab4fe1c17eb">Setting up ssh public key authentication on macOS using a YubiKey 4</a></li>
+</ul>
+
+<p>The rest of this document goes into the OpenPGP configuration and how to configure and load the keys onto the Yubikey.</p>
+
+<h2 id="generating-the-individual-subkeys">Generating the individual subkeys</h2>
+
+<h3 id="recognizing-the-yubikey-as-a-smart-card">Recognizing the Yubikey as a Smart Card</h3>
+
+<p>We begin by looking at whether or not <code class="highlighter-rouge">gpg</code> can see your Yubikey as a Smart Card:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% % gpg-connect-agent --hex "scd apdu 00 f1 00 00" /bye
+D[0000]  05 01 00 90 00                                     .....           
+OK
+</span></code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">05 01 00</code> in the response tells us that this Yubikey is using version <code class="highlighter-rouge">5.1.0</code>.</p>
+
+<p>In addition, you can check the Yubikey’s Smart Card status using the following command. This is what mine looked like prior to configuration:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">%  gpg --card-status
+Reader ...........: Yubico YubiKey OTP FIDO CCID
+Application ID ...: D276XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Application type .: OpenPGP
+Version ..........: 2.1
+Manufacturer .....: Yubico
+Serial number ....: 086XXXXX
+Name of cardholder: [not set]
+Language prefs ...: [not set]
+Salutation .......: 
+URL of public key : [not set]
+Login data .......: [not set]
+Signature PIN ....: not forced
+Key attributes ...: rsa4096 rsa2048 rsa2048
+Max. PIN lengths .: 127 127 127
+PIN retry counter : 3 0 0
+Signature counter : 0
+Signature key ....: [none]
+Encryption key....: [none]
+Authentication key: [none]
+General key info..: [none]
+</span></code></pre></div></div>
+
+<h3 id="generating-an-openpgp-key-if-you-already-dont-have-one">Generating an OpenPGP key (if you already don’t have one)</h3>
+
+<p>I’ll be using my Protonmail key for the purposes of this example, but for those not using Protonmail or who want to start with a fresh keypair, you can generate a key using the instructions here - <a href="https://developers.yubico.com/PGP/Importing_keys.html">Generate a Key</a></p>
+
+<blockquote>
+  <p>As mentioned previously, I use <code class="highlighter-rouge">RSA4096</code> as my cipher for various reasons, but feel free to modify this based on your own use case.</p>
+</blockquote>
+
+<h3 id="assumptions">Assumptions</h3>
+
+<p>The following instructions assume that you’ve generated your OpenPGP keypair and that it has been imported into your keychain and granted <code class="highlighter-rouge">Ultimate</code> Ownertrust.</p>
+
+<h4 id="finding-your-openpgp-key-id">Finding your OpenPGP Key ID</h4>
+
+<p>For example, in the following output:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go"> % gpg --fingerprint
+/Users/mel/.gnupg/pubring.kbx
+-----------------------------
+pub   dsa2048 2010-08-19 [SC] [expires: 2024-05-11]
+      85E3 8F69 046B 44C1 EC9F  B07B 76D7 8F05 00D0 26C4
+</span><span class="gp">uid           [ unknown] GPGTools Team &lt;team@gpgtools.org&gt;</span><span class="w">
+</span><span class="go">sub   rsa4096 2014-04-08 [S] [expires: 2024-05-11]
+sub   rsa4096 2020-05-11 [E] [expires: 2024-05-11]
+</span></code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">00D0 26C4</code> represents the <strong>Short Key ID</strong></li>
+  <li><code class="highlighter-rouge">76D7 8F05 00D0 26C4</code> represents the <strong>Long Key ID</strong></li>
+</ul>
+
+<blockquote>
+  <p><strong>WARNING:</strong> It is <em>recommended</em> that <strong>Long Key IDs</strong> are used as the collision space for <strong>Short Key IDs</strong> may result in duplicate identifiers.</p>
+</blockquote>
+
+<h3 id="editing-your-openpgp-key">Editing your OpenPGP key</h3>
+
+<p>We’ll be using <code class="highlighter-rouge">gpg</code>’s interactive mode to add subkeys to our primary OpenPGP key. (**replace XXXXXXXX with the associated Key ID for your generated keypair):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% gpg --expert --edit-key XXXXXXXXXXXXXXXX
+</span><span class="gp">gpg (GnuPG/MacGPG2) 2.2.20;</span><span class="w"> </span>Copyright <span class="o">(</span>C<span class="o">)</span> 2020 Free Software Foundation, Inc.
+<span class="go">This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span></code></pre></div></div>
+
+<p>You’ll note that there are two components to the key:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">sec</code> - the secret part</li>
+  <li><code class="highlighter-rouge">ssb</code> - the subkey part. By default, we already have an encryption subkey (specified by <code class="highlighter-rouge">usage: E</code>)</li>
+</ul>
+
+<h4 id="create-the-authentication-subkey">Create the Authentication Subkey</h4>
+
+<p>Since we’re using <code class="highlighter-rouge">RSA4096</code> as our base cipher, we’ll be creating a similar Authenticataion subkey.</p>
+
+<blockquote>
+  <p><strong>NOTE:</strong> Be default, subkeys have <code class="highlighter-rouge">Sign</code> and <code class="highlighter-rouge">Encrypt</code> allowed actions enabled. You need to toggle their states to disable them. Current subkey capabilities are enumerated in the  <code class="highlighter-rouge">Current allowed actions:</code> field.</p>
+</blockquote>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">gpg&gt;</span><span class="w"> </span>addKey
+<span class="go">Please select what kind of key you want:
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (5) Elgamal (encrypt only)
+   (6) RSA (encrypt only)
+   (7) DSA (set your own capabilities)
+   (8) RSA (set your own capabilities)
+  (10) ECC (sign only)
+  (11) ECC (set your own capabilities)
+  (12) ECC (encrypt only)
+  (13) Existing key
+  (14) Existing key from card
+Your selection? 8
+
+Possible actions for a RSA key: Sign Encrypt Authenticate 
+Current allowed actions: Sign Encrypt 
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? S
+
+Possible actions for a RSA key: Sign Encrypt Authenticate 
+Current allowed actions: Encrypt 
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? E
+
+Possible actions for a RSA key: Sign Encrypt Authenticate 
+Current allowed actions: 
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? A
+
+Possible actions for a RSA key: Sign Encrypt Authenticate 
+Current allowed actions: Authenticate 
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? Q
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048) 4096
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+</span><span class="gp">      &lt;n&gt;</span><span class="w">  </span><span class="o">=</span> key expires <span class="k">in </span>n days
+<span class="gp">      &lt;n&gt;</span>w <span class="o">=</span> key expires <span class="k">in </span>n weeks
+<span class="gp">      &lt;n&gt;</span>m <span class="o">=</span> key expires <span class="k">in </span>n months
+<span class="gp">      &lt;n&gt;</span>y <span class="o">=</span> key expires <span class="k">in </span>n years
+<span class="go">Key is valid for? (0) 0
+Key does not expire at all
+Is this correct? (y/N) y
+Really create? (y/N) y
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+</span><span class="gp">disks) during the prime generation;</span><span class="w"> </span>this gives the random number
+<span class="go">generator a better chance to gain enough entropy.
+
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A 
+</span></code></pre></div></div>
+
+<p>One the operation completes, you should see a new <code class="highlighter-rouge">ssb</code> or subkey listed with your other keys.</p>
+
+<h4 id="optional-create-the-signing-subkey">[Optional] Create the Signing Subkey</h4>
+
+<p>Proceed as before in the previous section, but ensure that the subkey generated has on the <code class="highlighter-rouge">sign capability</code>. Again, completing this operation should result in another <code class="highlighter-rouge">ssb</code>/subkey entry for <code class="highlighter-rouge">gpg</code>:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">Really create? (y/N) y
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+</span><span class="gp">disks) during the prime generation;</span><span class="w"> </span>this gives the random number
+<span class="go">generator a better chance to gain enough entropy.
+
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A 
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S
+</span></code></pre></div></div>
+
+<h4 id="save-your-configuration-and-export-your-modified-private-key-for-safe-keeping">Save your configuration and export your modified private key for safe keeping</h4>
+
+<p>Quit out of the <code class="highlighter-rouge">gpg</code> utility. This should prompt you to save your changes.</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">gpg&gt;</span><span class="w"> </span>quit
+<span class="go">Save changes? (y/N) y
+
+</span><span class="gp">% gpg --export-secret-key --armor XXXXXXXXXXXXXXXX &gt;</span><span class="w"> </span>private_with_subkeys.key
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>WARNING:</strong> It’s important not to underestimate the value of your secret key. Anyone who can potentially copy/read it can impersonate you. It is recommended that you store it securely (and potentially offline).</p>
+</blockquote>
+
+<h2 id="moving-the-subkeys-to-the-yubikey">Moving the subkeys to the Yubikey</h2>
+
+<p>Once the appropriate subkeys are generated, we’ll move them to be exclusively be accessible through the Yubikey Smart Card interface. This means that after this operation, removing the Yubikey from the system will also remove access to the associated OpenPGP key.</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% gpg --expert --edit-key XXXXXXXXXXXXXXXX
+
+</span><span class="gp">gpg (GnuPG/MacGPG2) 2.2.20;</span><span class="w"> </span>Copyright <span class="o">(</span>C<span class="o">)</span> 2020 Free Software Foundation, Inc.
+<span class="go">This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>toggle
+<span class="go">
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>keytocard
+<span class="go">Really move the primary key? (y/N) y
+Please select where to store the key:
+   (1) Signature key
+   (3) Authentication key
+Your selection? 1
+</span></code></pre></div></div>
+
+<p>After moving you primary key, you will need to select the individual subkeys for migration. Unfortunately, this is somewhat obtuse in the <code class="highlighter-rouge">gpg</code> interactive mode. You can select keys by specifying their <code class="highlighter-rouge">ssb</code> ordinal. The <code class="highlighter-rouge">usage</code> determines where the key will be stored on the Yubikey/Smart Card.</p>
+
+<blockquote>
+  <p><strong>NOTE:</strong> The selected subkey can be identified by the <strong>*</strong> appended to the <code class="highlighter-rouge">ssb</code> identifier.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>WARNING:</strong> Key selection, like subkey generation, works with toggles. To <em>disable</em> a selected key, you <strong>MUST</strong> reissue the selection command <strong>AGAIN</strong>.</p>
+</blockquote>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">gpg&gt;</span><span class="w"> </span>key 1
+<span class="go">
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb* rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>keytocard
+<span class="go">Please select where to store the key:
+   (2) Encryption key
+Your selection? 2
+
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>key 1
+<span class="go">
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>key 2
+<span class="go">
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb* rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>keytocard
+<span class="go">Please select where to store the key:
+   (3) Authentication key
+Your selection? 3
+
+sec  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: SC  
+     trust: ultimate      validity: ultimate
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: E   
+ssb* rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: A   
+ssb  rsa4096/XXXXXXXXXXXXXXXX
+     created: 2020-10-14  expires: never       usage: S   
+</span><span class="gp">[ultimate] (1). mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">
+</span><span class="gp">gpg&gt;</span><span class="w"> </span>quit
+<span class="go">Save changes? (y/N) y
+</span></code></pre></div></div>
+
+<p>There are only 3 available slots for certificates on the Yubikey/Smart Card. Note that we did not end up transferring our generated Signing subkey. This is OK given the that private key uploaded has the Signing capability enabled (<code class="highlighter-rouge">usage: SC</code>).</p>
+
+<h3 id="verify-that-the-openpgp-subkeys-have-been-associated-with-the-yubikey">Verify that the OpenPGP subkeys have been associated with the Yubikey</h3>
+
+<p>You can list <code class="highlighter-rouge">-K</code> or <code class="highlighter-rouge">--list-secret-key</code> argument for <code class="highlighter-rouge">gpg</code> to verify that the OpenPGP keys have been migrated to the Yubikey. In particular, you should be able to the the associated secret (<code class="highlighter-rouge">sec</code>), the three subkeys (<code class="highlighter-rouge">ssb</code>) and a reference to the Yubikey Smart Card (<code class="highlighter-rouge">Card serial no.</code>):</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% gpg -K                
+/Users/mel/.gnupg/pubring.kbx
+-----------------------------
+
+... [REDACTED]
+
+</span><span class="gp">sec&gt;</span><span class="w">  </span>rsa4096 2020-10-14 <span class="o">[</span>SC]
+<span class="go">      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      Card serial no. = 0006 086XXXXX
+</span><span class="gp">uid           [ultimate] mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="gp">ssb&gt;</span><span class="w">  </span>rsa4096 2020-10-14 <span class="o">[</span>E]
+<span class="gp">ssb&gt;</span><span class="w">  </span>rsa4096 2020-10-14 <span class="o">[</span>A]
+<span class="go">ssb   rsa4096 2020-10-14 [S]
+
+... [REDACTED]
+</span></code></pre></div></div>
+
+<p>Alternatively, you can use <code class="highlighter-rouge">gpg --card-status</code>.</p>
+
+<h2 id="configure-gpg-agent-to-act-as-an-authentication-source-for-ssh-agent">Configure <code class="highlighter-rouge">gpg-agent</code> to act as an authentication source for <code class="highlighter-rouge">ssh-agent</code></h2>
+
+<p>This section assumes that you already have <code class="highlighter-rouge">gpg-agent</code> running on your system (which should be true if you installed the GPG Suite mentioned earlier). The documentation I previously found described a bunch of hacks/workarounds. I used that material to describe a process that worked for me using the default functionality of <code class="highlighter-rouge">gpg</code> and <code class="highlighter-rouge">ssh</code>.</p>
+
+<h3 id="enable-ssh-support-for-the-gpg-agent">Enable <code class="highlighter-rouge">ssh</code> support for the <code class="highlighter-rouge">gpg-agent</code></h3>
+
+<p>Append the following line to your <code class="highlighter-rouge">~/.gnupg/gpg-agent.conf</code> file:</p>
+
+<div class="language-config highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">enable</span>-<span class="n">ssh</span>-<span class="n">support</span>
+</code></pre></div></div>
+
+<p>Restart your <code class="highlighter-rouge">gpg-agent</code> by sending the process the appropiate signal via <code class="highlighter-rouge">kill</code>.</p>
+
+<h3 id="identify-the-keygrip-associated-with-your-openpgp-key">Identify the <code class="highlighter-rouge">keygrip</code> associated with your OpenPGP key</h3>
+
+<p>This is required to identify which secrets can be passed through to the <code class="highlighter-rouge">ssh-agent</code>.</p>
+
+<blockquote>
+  <p><strong>WARNING:</strong> For the purposes of integration, we will be using <strong>ONLY</strong> the Authentication subkey.</p>
+</blockquote>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% gpg2 --with-keygrip -k mel.llaguno@protonmail.com
+... [REDACTED]
+
+pub   rsa4096 2020-10-14 [SC]
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      Keygrip = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+</span><span class="gp">uid           [ultimate] mel.llaguno@protonmail.com &lt;mel.llaguno@protonmail.com&gt;</span><span class="w">
+</span><span class="go">sub   rsa4096 2020-10-14 [E]
+      Keygrip = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+sub   rsa4096 2020-10-14 [A]
+      Keygrip = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX &lt;&lt;&lt;&lt; We will need this one.
+sub   rsa4096 2020-10-14 [S]
+      Keygrip = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+... [REDACTED]
+</span></code></pre></div></div>
+
+<h3 id="configure-the-authentication-subkey-keygrip">Configure the Authentication Subkey Keygrip</h3>
+
+<p>Add the keygrip to the following file (which may not exist) - <code class="highlighter-rouge">~/.gnupg/sshcontrol</code>.</p>
+
+<h3 id="confgure-your-shell-to-export-the-ssh_auth_socket-environment-variable">Confgure your shell to export the <code class="highlighter-rouge">SSH_AUTH_SOCKET</code> environment variable</h3>
+
+<p>Add the following line to the appropriate start up file for your shell:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">export SSH_AUTH_SOCK=$</span><span class="o">(</span>gpgconf <span class="nt">--list-dirs</span> agent-ssh-socket<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Verfiy that this environment variable is present:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% env | grep SSH
+SSH_AUTH_SOCK=/Users/mel/.gnupg/S.gpg-agent.ssh
+</span></code></pre></div></div>
+
+<p>If noting is listed, then the environment variable has not been properly exported.</p>
+
+<h3 id="test-the-visibility-of-your-encryption-openpgp-subkey">Test the visibility of your Encryption OpenPGP subkey</h3>
+
+<p>If everything is working correctly, your Authentication subkey should now be visible to <code class="highlighter-rouge">ssh</code>. You can verify using the following commands:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ssh-add -l            
+4096 SHA256:aLsYjSwRYVXc9WU6hrW0NjVIi4axQlN17DOhw5c2R7w cardno:0006086XXXXX (RSA)
+</span></code></pre></div></div>
+
+<blockquote>
+  <p><strong>NOTE:</strong> The <code class="highlighter-rouge">cardno</code> should be the same as the one associated with your Yubikey Smart Card in <code class="highlighter-rouge">gpg</code>.</p>
+</blockquote>
+
+<p>To generate the public portion of this new Authentication ssh key, use the following command:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% ssh-add -L    
+ssh-rsa AAAA...[REDACTED]...spqw== cardno:0006086XXXXX
+</span></code></pre></div></div>
+
+<p><strong><em>This is the public key that you can upload to remote servers for authentication purposes.</em></strong></p>
+
+<h1 id="last-but-not-least---configure-github-with-the-public-key-of-the-openpgp-authentication-subkey">Last but not least - Configure GitHub with the public key of the OpenPGP Authentication Subkey.</h1>
+
+<p><img src="https://github.githubassets.com/images/modules/logos_page/Octocat.png" alt="GitHub Octocat" /></p>
+
+<h2 id="instructions">Instructions</h2>
+
+<p>To complete this last step, you will need to be logged into your GitHub account.</p>
+
+<ol>
+  <li>Navigate to your https://github.com/settings/keys</li>
+  <li>Create an <code class="highlighter-rouge">New SSH Key</code></li>
+  <li>Paste in the output of the <code class="highlighter-rouge">ssh-add -L</code> command above. Label the key and save.</li>
+  <li>Attempt to pull/checkout a repository with your github account. When you first attempt to use the Yubikey, you should be prompted for the default PIN. Enter it to continue (and be mindful of the number of retries you have before the Yubikey is locked).</li>
+  <li>If you’ve provided your default PIN correctly, you should notice the LED on your Yubikey flashing. Simply touch it to proceed.</li>
+</ol>
+
+<p><strong>Voila! You’re finally done.</strong></p>
+
+<h2 id="addendum---code-signing">Addendum - Code Signing</h2>
+
+<p>Now that we have OpenPGP support for GitHub, we can use the generated Signing subkey with GitHub commits. The official instructions are here - <a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/telling-git-about-your-signing-key#telling-git-about-your-x509-key-1">Telling Git about your signing key
+</a>.</p>
+
+<p>Be sure to use the separate Signing subkey for this purpose.</p>
+
+<blockquote>
+  <p><strong>NOTE:</strong> This only works if you’ve enabled public visibility to your primary email address associated with your GitHub account and that address is the same as the one associated with the certificate we used for this process.</p>
+</blockquote>
+
+<h1 id="todo">TODO</h1>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" checked="checked" />code signing</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />revocation</li>
+</ul>
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=Security+Adventures+1%20-%20https://xirkus.github.io/posts/security-adventures-1%20by%20@xirkus" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://xirkus.github.io/posts/security-adventures-1" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+    Fin.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+
+<script src="/assets/vendor-734ddaa553ebf4e6ca703bd7c567ef4a0e43b0ba799607355e56b81e88781318.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-cfde13ac81ddaf4351b2e739603e2baf688d0fcc9aba613fe62bbb1c7b037fb9.js" type="text/javascript"></script>
+
+
+</body>
+</html>

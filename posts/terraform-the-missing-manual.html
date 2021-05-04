@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>StrayLight - Musings from the Edge | Terraform - The Missing Manual</title>
+  <meta name="description" content="Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it's usage for your project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Terraform - The Missing Manual">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://xirkus.github.io/posts/terraform-the-missing-manual">
+  <meta property="og:description" content="Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it's usage for your project.">
+  <meta property="og:site_name" content="StrayLight - Musings from the Edge">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://xirkus.github.io/posts/terraform-the-missing-manual">
+  <meta name="twitter:title" content="Terraform - The Missing Manual">
+  <meta name="twitter:description" content="Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it's usage for your project.">
+
+  
+    <meta property="og:image" content="https://xirkus.github.io/assets/og-image-fb95251ceba6fe6900758797f54d7e5436006b398be2da456030c7af5265a59f.png">
+    <meta name="twitter:image" content="https://xirkus.github.io/assets/og-image-fb95251ceba6fe6900758797f54d7e5436006b398be2da456030c7af5265a59f.png">
+  
+
+  <link href="https://xirkus.github.io/feed.xml" type="application/rss+xml" rel="alternate" title="StrayLight - Musings from the Edge Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-dark-11327753546b2135c989eee5cd83497a2734b702928d016839d795f6c706e3d5.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-dark-d161409442b7e523089f24d08d0a55951549ece7504207c376d53b020713494d.png">
+      <link rel="stylesheet" type="text/css" href="/assets/dark-9cd1dd9848c994b7861828f4d4cc1f0586ad62b95537e097798620bbdabc3b40.css">
+    
+
+  
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="StrayLight - Musings from the Edge">StrayLight - Musings from the Edge</a>
+  <ul class="header-links">
+    
+      <li>
+        <a href="/about" title="About me">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-about">
+  <use href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about" xlink:href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://twitter.com/xirkus" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xirkus" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://stackoverflow.com/users/15160382" rel="noreferrer noopener" target="_blank" title="Stack Overflow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-stackoverflow">
+  <use href="/assets/stackoverflow-12ba59133ed134d26156d30f095e0222b6039395cf26f2fab0cb6ce3ef2db00d.svg#icon-stackoverflow" xlink:href="/assets/stackoverflow-12ba59133ed134d26156d30f095e0222b6039395cf26f2fab0cb6ce3ef2db00d.svg#icon-stackoverflow"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://keybase.io/mllaguno" rel="noreferrer noopener" target="_blank" title="Keybase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-keybase">
+  <use href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase" xlink:href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://hub.docker.com/r/mllaguno" rel="noreferrer noopener" target="_blank" title="Docker Hub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-docker">
+  <use href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker" xlink:href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:mel.llaguno@protonmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+  </ul>
+</nav>
+
+
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>Terraform - The Missing Manual</h1>
+            <p>Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it's usage for your project.</p>
+            <div class="article-list-footer">
+  <span class="article-list-date">
+    January 18, 2021
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      19 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/terraform" title="See all posts with tag 'Terraform'">Terraform</a>
+    
+      
+      <a href="/tag/aws" title="See all posts with tag 'AWS'">AWS</a>
+    
+      
+      <a href="/tag/hashicorp" title="See all posts with tag 'Hashicorp'">Hashicorp</a>
+    
+      
+      <a href="/tag/devops" title="See all posts with tag 'DevOps'">DevOps</a>
+    
+  </div>
+</div>
+          </header>
+
+          <div class="article-content">
+            <p><img src="https://www.terraform.io/assets/images/og-image-large-e60c82fe.png" alt="Terrafrom Logo" /></p>
+
+<h1 id="terraform---the-missing-manual">Terraform - The Missing Manual</h1>
+
+<p>Infrastructure-as-Code is a principal that drives modern DevOps practice. I discuss the current state of Terraform and provide some basic guidelines/principles regarding how to structure it’s usage for your project.</p>
+
+<h1 id="tables-of-contents">Tables of Contents</h1>
+<ul>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#rationale">Rationale</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#background">Background</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#terraform-documentation-gotchas">Terraform Documentation Gotcha’s</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#repository-structure">Repository Structure</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#basics">Basics</a>
+    <ul>
+      <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#directives">Directives</a></li>
+      <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#environment-variables">Environment Variables</a></li>
+      <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#two-stage-deployment">Two Stage Deployment</a></li>
+      <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#the-module">The Module</a>
+        <ul>
+          <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#runtime-variables-in-tfvars">Runtime variables with <code class="highlighter-rouge">.tfvars</code></a></li>
+          <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#use-officially-supported-terraform-registry-modules">Use Officially Support Terraform Registry Modules</a></li>
+        </ul>
+      </li>
+      <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#terraform-workspaces">Terraform Workspaces</a>
+        <ul>
+          <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#use-terraform-cloud-to-structure-workspaces-and-save-deployment-state">Use Terraform Cloud to structure Workspaces and save deployment state</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#devops-workflow">DevOps Workflow</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#miscellaneous">Miscellaneous</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#conclusion">Conclusion</a></li>
+  <li><a href="https://gist.github.com/xirkus/e57cc20fe7fc95694e302887948e9b12#todo">TODO</a></li>
+</ul>
+
+<h2 id="rationale">Rationale</h2>
+
+<p>Having used Terraform in the past to deploy a single-tenanted Kubernetes cluster to GCP, I was curious to see how much Terraform had evolved and how well it supported AWS. My deep dive revealed that <em>to use the cutting edge required significant bleeding</em>. To save some grief/frustration for others, I’ve written some guidelines which I believe will answer the following questions:</p>
+
+<ol>
+  <li><strong>Where do I start with a new project?</strong></li>
+  <li><strong>How do I structure a Terraform repository?</strong></li>
+  <li><strong>How do I accomodate different deployment environments?</strong></li>
+</ol>
+
+<p>To make sense of these guidelines, you should be aware of the following:</p>
+
+<ul>
+  <li>Infrastructure as Code implies that programmatic structure should be applied to the organization of the code, not simply that configuration files should be version controlled.</li>
+  <li>Programmatic structure implies the DRY (Don’t Repeat Yourself) principle.</li>
+  <li>Programmatic structure implies the Single Responsibility principle.</li>
+  <li>Programmatic structure implies that code will be literate and self-documenting.</li>
+  <li>Programming idioms are used to structure the understanding of how to best leverage Terraform and it’s capabilities.</li>
+  <li>We adhere to the KISS Principle and avoid adding unnecessary complexity.</li>
+</ul>
+
+<p>Caveats:</p>
+
+<ol>
+  <li>This is a 80/20 solution, meaning that not all use cases will be covered.</li>
+  <li>This solution assumes a single cloud provider.</li>
+  <li>Assumes that all configuration files will be version controlled and that version control features will be used (such as feature branches for changes).</li>
+</ol>
+
+<h2 id="background">Background</h2>
+
+<ul>
+  <li><a href="https://www.hashicorp.com/resources/evolving-infrastructure-terraform-opencredo">Evolving Your Infrastructure with Terraform: OpenCredo’s 5 Common Terraform Patterns</a>
+    <ul>
+      <li>The problem with the proposed final solution is that multiple state files for various components of your infrastructure undermine the underlying premise of Terraform - that there is a single source of truth regarding the desired state of your infrastructure as code.</li>
+      <li>In the “Orchestrating Terraform” section, she mention’s that there are module ordering dependencies that multi-state Terraform configurations suffer from. Why not use <code class="highlighter-rouge">depends_on</code> within a single mono-repo?</li>
+    </ul>
+  </li>
+  <li><a href="https://terragrunt.gruntwork.io/docs/features/keep-your-terraform-code-dry/#motivation">Keep your Terraform code DRY</a></li>
+  <li>Advocates for the use of Terragrunt, but this seems like another layer of abstraction/complexity which violates <em>KISS</em>.</li>
+  <li>Also requires duplicate config per deployment environment which seems to defeat the purpose of <em>DRY</em>.</li>
+  <li><a href="https://medium.com/cloud-technology-solutions/the-role-profiles-pattern-across-infrastructure-as-code-3d8910dcd3c9">The Role-Profiles Pattern Across Infrastructure as Code</a>
+    <ul>
+      <li>interesting perspective with regards to desired structure of infrastructure code, but again relies on Terragrunt.</li>
+    </ul>
+  </li>
+  <li><a href="https://medium.com/swlh/advantages-and-pitfalls-of-your-infra-as-code-repo-strategy-214c1cb45612">Advantages and Pitfalls of your Infra-as-Code Repo Strategy</a> - Another article with some interesting perspectives, but again recommends structuring a multi-tenant repo with directories instead of Workspaces. Workspaces maintain the state of a <em>specific</em> deployment while providing access control on who can make the changes. Relegating this to a git repo’s access control seems like a step backwards to me.</li>
+</ul>
+
+<blockquote>
+  <p><strong><em>These perspectives of advanced Terraform users suggest that _STRUCTURE_ is a fundamental complexity/issue introduced by Terraform. Can these be addressed using _JUST_ Terraform features and providing a “Convention over Configuration” solution?</em></strong></p>
+</blockquote>
+
+<h2 id="terraform-documentation-gotchas">Terraform Documentation Gotcha’s</h2>
+
+<p><strong><a href="https://www.terraform.io/docs/index.html">Official Terraform Documentation</a></strong></p>
+
+<p>There’s a wealth of documentation on Terraform provided by Hashicorp, and most users would assume (like myself) that this is good place to start. But here’s the problem - the shear <em>amount of documentation</em> does very little to help determine <em>WHERE</em> to get started.</p>
+
+<blockquote>
+  <p><strong>Terraform’s documentation is like learning to communicate in a foreign language using only a dicitionary as a guide.</strong></p>
+</blockquote>
+
+<p>While the specifics are well documented, it’s difficult to understand the <em>CONTEXT</em> of how to apply that information without significant experimentation. In other words, the tool ergonomics <em>SUCK</em>. Here’s a list of missing features that would go a long way to improving the Terraform experience</p>
+
+<ul>
+  <li>scaffolding which suggests an organizational pattern for structuring the project</li>
+  <li>clear and actionable error messages</li>
+  <li>up-to-date documentation which uses working examples and references/leverages current features (for example, Modules and the Terraform Registry).</li>
+  <li>intellisense/autocomplete on defined output variables in the IntelliJ plugin.</li>
+</ul>
+
+<p>This list is far from exhaustive, but it gives you a sense of the number of sharp edges associated with Terraform adoption/usage and the barrier to entry that many face.</p>
+
+<h2 id="repository-structure">Repository Structure</h2>
+
+<p><strong><em>TL;DR</em></strong> - here’s the recommended Terraform organizational structure. What follows is a discussion of basic Terraform concepts and the justifictions as to <em>WHY</em> this structure makes the most sense.</p>
+
+<p>Throughout, I make a number of <strong>[Recommendation]s</strong> as well as point out some <strong>[ANTI-PATTERN]s</strong>, <strong>[WARNING]s</strong>, and <strong>[BUG]s</strong>.</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">.
+</span><span class="go">README.md
+main.tf
+outputs.tf
+variables.tf
++-- env
+    +-- dev.tfvars
+    +-- staging.tfvars
+    +-- prod.tfvars
++-- aws
+    +-- iam
+        +-- README.md
+        +-- main.tf
+        +-- output.tf
+        +-- variables.tf
+    +-- lambda
+        +-- README.md
+        +-- main.tf
+        +-- output.tf
+        +-- variables.tf
+    +-- ...
+</span></code></pre></div></div>
+
+<h2 id="basics">Basics</h2>
+
+<h3 id="directives">Directives</h3>
+
+<p><a href="https://www.terraform.io/docs/configuration/index.html">Official Configuration Documentation</a></p>
+
+<p>Terraform configuration consists of files (which end with the <code class="highlighter-rouge">.tf</code> extension) which contain directives. These directives are used to accomplish the following things:</p>
+
+<ul>
+  <li><a href="https://www.terraform.io/docs/configuration/blocks/providers/index.html"><code class="highlighter-rouge">provider</code></a>: specify the infrastructure provider you want to deploy against</li>
+  <li><a href="https://www.terraform.io/docs/configuration/blocks/resources/index.html"><code class="highlighter-rouge">resource</code></a>: specify the desired end state of the resources you want to configure</li>
+  <li><a href="https://www.terraform.io/docs/configuration/variables.html"><code class="highlighter-rouge">variable</code></a>: pass around configuration variables between various Terraform components</li>
+  <li><a href="https://www.terraform.io/docs/configuration/outputs.html"><code class="highlighter-rouge">output</code></a>: provide output regarding configured resources</li>
+  <li><a href="https://www.terraform.io/docs/configuration/blocks/modules/index.html"><code class="highlighter-rouge">module</code></a>: a collection of terraform configuration files</li>
+  <li><a href="https://www.terraform.io/docs/configuration/locals.html"><code class="highlighter-rouge">locals</code></a> : variables defined specifically for a <code class="highlighter-rouge">module</code> scope</li>
+</ul>
+
+<p>The above directives are <em>not</em> exhaustive, but the ones mentioned will be the most commonly used to set up some basic configuration.</p>
+
+<h3 id="environment-variables">Environment Variables</h3>
+
+<p><strong><a href="https://www.terraform.io/docs/configuration/variables.html#assigning-values-to-root-module-variables">Assigning values to root module variables</a></strong></p>
+
+<p>Terraform provides a number of mechanisms to provide input into the executing <code class="highlighter-rouge">terraform</code> operation. These inputs can be provided through the following methods (listed in order of precedence):</p>
+
+<ul>
+  <li><code class="highlighter-rouge">export TF_VAR_name=value &amp;&amp; terraform _operation_</code>: provide an shell environment variable to specify the variable</li>
+  <li><code class="highlighter-rouge">terraform -var='name=value' _operation_</code>: specify a specific variable as an argument to the command</li>
+  <li><code class="highlighter-rouge">terraform -var-file="./path/to/file.tfvars" _operation_</code>: store specific variable name/value assignments in a <code class="highlighter-rouge">.tfvars</code> file</li>
+</ul>
+
+<h3 id="two-stage-deployment">Two-stage Deployment</h3>
+
+<p>Terraform is particularly useful for having a two-stage deployment (<code class="highlighter-rouge">terraform plan &amp;&amp; terraform apply</code>). This ensures that only <em>valid</em> configurations can be deployed. Terraform also provides a <code class="highlighter-rouge">terraform validate</code> command to ensure that the syntax within your module is correct (but I find this less useful that running <code class="highlighter-rouge">terraform plan</code> directly).</p>
+
+<h3 id="the-module">The Module</h3>
+
+<blockquote>
+  <p><strong><em>The <code class="highlighter-rouge">module</code> is the fundamental building block of Terraform (not, the <code class="highlighter-rouge">.tf</code> files themselves). Understanding this is the key to being able to structure your configuration repo.</em></strong></p>
+</blockquote>
+
+<p>A few key points regarding the Module:</p>
+
+<ol>
+  <li><strong><em>_EVERY_ directory that contains <code class="highlighter-rouge">.tf</code> files is considered a Module.</em></strong> This includes the root directory where Terraform configuration is first specified.</li>
+  <li><strong><em>Modules can be nested.</em></strong> (meaning subdirectories off of the root directory are considered child modules.</li>
+  <li><strong><em>Modules are structured in a parent-child hierarchy.</em></strong></li>
+  <li><strong><em>Modules do _NOT_ provide inheritance visibility to specifications between parent/child relationships which a few notable exceptions (i.e. <code class="highlighter-rouge">provider</code>).</em></strong> Information that needs to be passed between parent/child/sibling Modules needs to be <em>specified explicitly</em>.</li>
+  <li><strong><em>Modules can consist of more than a single <code class="highlighter-rouge">.tf</code> file.</em></strong></li>
+  <li><strong><em>Modules can be user-defined or reference external/public modules such as those available in the Terraform Registry.</em></strong></li>
+</ol>
+
+<p>If you think of the Module as analogous to a programming language method or function, then an obvious usage structure emerges regarding the organization of Terraform assets.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Programming Concept</strong></th>
+      <th><strong>Terraform Equivalent</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>function/method</td>
+      <td>Module</td>
+    </tr>
+    <tr>
+      <td>parameters</td>
+      <td>Input Variables</td>
+    </tr>
+    <tr>
+      <td>return value</td>
+      <td>Output Variables</td>
+    </tr>
+    <tr>
+      <td>local variables</td>
+      <td><code class="highlighter-rouge">locals</code> specification</td>
+    </tr>
+    <tr>
+      <td>method/function calls.</td>
+      <td><code class="highlighter-rouge">module</code> specification</td>
+    </tr>
+    <tr>
+      <td>implementation code.</td>
+      <td><code class="highlighter-rouge">resource</code> specification</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>The root directory is the function/entry point for <code class="highlighter-rouge">terraform</code> operations.</strong></p>
+
+<p>Using this analogy, a logical Module structure becomes apparent.</p>
+
+<blockquote>
+  <p><strong>[Recommendation] Place all Module inputs in <code class="highlighter-rouge">variables.tf</code></strong>
+This file explicitly declares all required variables for the Module.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>[Recommendation] Specify all Module outputs in <code class="highlighter-rouge">outputs.tf</code></strong>
+This file explicitly declares all values returned by the module associated with newly provisioned assets.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>[Recommendation] Specify all implementation details in <code class="highlighter-rouge">main.tf</code></strong>
+This file contains a Module’s implementation specifics which may include the following:</p>
+
+  <ul>
+    <li><code class="highlighter-rouge">provider</code> specification (usually defined at the <em>root</em> of a Terraform project).</li>
+    <li><code class="highlighter-rouge">module</code> specifications (which specify where feature specific implementation details are found/configured).</li>
+    <li><code class="highlighter-rouge">resource</code> specifications (which are feature specific implementation configuration).</li>
+    <li><code class="highlighter-rouge">locals</code> specifications (local variables used to remove boiler-plate specification variables).</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <p><strong>[ANTI-PATTERN]: The monolithic <code class="highlighter-rouge">.tf</code> file</strong>
+A lot of starting tutorials begin with a single monolithic <code class="highlighter-rouge">.tf</code> file. While initially expedient, this lack of organization
+means Terraform assets with different responsibilities/dependencies remain undifferentiated for the end user. Violating the
+single-responsibility principle leads to unmaintainable code and future technical debt.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>[ANTI-PATTERN]: The use of unconventional <code class="highlighter-rouge">.tf</code> file names</strong>
+If you look at the Terraform documentation and official Modules published on the Terraform Registry, an organizational
+convention is used. Each module contains the following three <code class="highlighter-rouge">.tf</code> files:</p>
+
+  <ul>
+    <li><code class="highlighter-rouge">main.tf</code></li>
+    <li><code class="highlighter-rouge">variables.tf</code></li>
+    <li><code class="highlighter-rouge">outputs.tf</code></li>
+  </ul>
+
+  <p>While it’s possible to make a service specific configuration file (i.e. <code class="highlighter-rouge">api_service.tf</code>), this is <em>NOT RECOMMENDED</em>.</p>
+
+  <p>Why? By explicitly documenting a Module through the use of these files, you communicate with the end user the intended
+usage of the Module. Inputs are clearly defined within <code class="highlighter-rouge">variables.tf</code> as well as return values in the <code class="highlighter-rouge">outputs.tf</code>. All
+implementation specific details are separated into the <code class="highlighter-rouge">main.tf</code>. This is more readily consumable by end users.</p>
+</blockquote>
+
+<h4 id="runtime-variables-in-tfvars">Runtime variables in <code class="highlighter-rouge">.tfvars</code></h4>
+
+<p>A commonly encountered software development pattern requires different deployment environments for developers, staging, and production. The differences between environments can be reflected in things such as:</p>
+
+<ul>
+  <li>the size of the compute asset</li>
+  <li>the location of the asset</li>
+  <li>access privileges to the asset or any generated artifacts</li>
+  <li>the provider profile being used to deploy the infrastructure</li>
+  <li>etc.</li>
+</ul>
+
+<p>We make the assumption here that each environment has it’s own provider profile configured for the deployment specific functionality in order to follow the principle of <em>Least Privileged Access</em> (i.e. we don’t want a single provider profile to manage each of these separate deployment environments to avoid change conflicts). Having separate provisioner profiles also means that developers/QA <em>CANNOT</em> accidentally overwrite the production deployments with newer/unverified changes which may break the application. As per DevOps best practices, production deployments should be automated through the use of profiles which have limited membership/access.</p>
+
+<p>These types of configuration vary in the asset specifics, but not necessarily in the <em>STRUCTURE</em> of the application being deployed. The variants between deployment environments are best encoded in separated <code class="highlighter-rouge">.tfvars</code> files. In particular, we recommend the following organization:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">dev.tfvars</code></li>
+  <li><code class="highlighter-rouge">staging.tfvars</code></li>
+  <li><code class="highlighter-rouge">prod.tfvars</code></li>
+</ul>
+
+<blockquote>
+  <p><strong>[Recommendation] Use deployment specific resource prefixes to differentiate provisioned assets</strong>
+Provisioned assets should be specific to a deployment type (i.e. the same asset should <em>NOT</em> be used against different<br />
+deployment stages). To facilitate this separation, deployment specific prefixes should be used for asset creation. This
+ensures a clear separation of access/responsibilities between created assets.</p>
+
+  <p>There are a number of features Terraform provides to support this separation:</p>
+
+  <ol>
+    <li><strong><em>The Workspace feature (which we will discuss in detail later)</em></strong>. Essentially, different workspaces can be used to
+      <blockquote>
+        <p>preserved the configured state of a deployment. With separate Workspaces, you can avoid conflict between different
+deployment environments (i.e. changes applied to dev will not automatically be applied to production).</p>
+      </blockquote>
+    </li>
+    <li><strong><em>Terraform provides the <code class="highlighter-rouge">local.workspace</code> variable</em></strong> to reference the current Workspace within configuration files. If
+      <blockquote>
+        <p>you use the Workspace feature, there is no need to create a user defined <code class="highlighter-rouge">workspace</code> variable.</p>
+      </blockquote>
+    </li>
+  </ol>
+</blockquote>
+
+<h4 id="use-officially-supported-terraform-registry-modules">Use officially supported Terraform Registry Modules</h4>
+
+<p><strong><a href="https://registry.terraform.io">Terraform Registry</a></strong></p>
+
+<p>It’s tempting to begin using Terraform by slapping together some quick <code class="highlighter-rouge">resource</code> directives, but this is the path to despair. You’ll quickly realize that maintaining configuration this way easily leads to duplication and spaghetti.</p>
+
+<p>What’s the alternative? Although the official documentation only mentions Terraform Registry in passing, you should strive to use existing modules to configure your infrastructure. In addition to being officially supported and tested, leveraging existing Modules leaves you free to focus on your infrastructure and not the implementation details of standard provider features/capabilities.</p>
+
+<p>While ideally, this is the way <em>ALL</em> users should start, there is no clear guidance on how Terraform Registry Modules should be incorporated into your project. <em>Even worse</em>, the Terraform Registry Module documentation is not entirely up-to-date which makes using these modules a frustrating experience at best.</p>
+
+<h5 id="terraform-registry-how-to">Terraform Registry How-to</h5>
+
+<p>The following guidance is a combination of project organization and usage which will allow you to leverage the Terraform Registry as a starting/first-class resource. We use the following conventions for our project:</p>
+
+<ol>
+  <li><strong>We use a provider subdirectory to contain provider-specific implementations organized as a Module.</strong> This makes a clear distinction between different provider implementations.</li>
+  <li><strong>For each provider-specific implementation, we follow the above Module structure with regards to organization.</strong></li>
+  <li><strong>We separate out provider-specific features by directory.</strong> This means, IAM configuration is separate from asset configuration (for example Lambda configuration).</li>
+  <li><strong>The goal of this structure is to provide a single-source-of-truth per provider feature, adhere to the Single Responsibility principle, and avoid duplication.</strong> The consequence of this is that features which require multiple configuration (i.e. account/permission configuration as well as asset configuration) will have it’s configuration spread across multiple modules. This is intentional; where configuration is dependent on other provider functionality, dependencies can be easily specified between the modules (for example ordering of configuration). This is <em>much</em> more difficult to accomplish if the asset creation mixes a bunch of responsibilities together.</li>
+  <li><strong>Each user-defined Module in this structure is meant to be reusable (as per the DRY principle).</strong> In other words, required parameters should be passed in as Input variables instead of hard-coded within a Module. These variables <em>MUST</em> be passed into individual <code class="highlighter-rouge">module</code> blocks and defined within the provider-specific Module’s <code class="highlighter-rouge">variables.tf</code> file. Each Module should be able to be invoked multiple times with configuration specific parameters passed in through Input variables.</li>
+  <li><strong>Leverage built-in Terraform variables and reduce duplicate interpolation through the use of <code class="highlighter-rouge">locals</code>.</strong></li>
+  <li><strong>Document <em>EACH</em> module with a <code class="highlighter-rouge">README.md</code> to communicate configuration context to future users that <em>cannot</em> be captured in the configuration files themelves (i.e. reasons why a particular work-around was used).</strong> Optionally, add a link to the official documentation.</li>
+  <li><strong>Use the Terraform Registry <code class="highlighter-rouge">module</code> provisioning specification.</strong> Each Module should specify <code class="highlighter-rouge">Provisioning Instructions</code>. For example, here’s the <a href="https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest">AWS IAM Module</a>. Use indivudal <code class="highlighter-rouge">resource</code> directives as a <em>last resort</em>.</li>
+  <li>
+    <p><strong>Run <code class="highlighter-rouge">terraform init</code> to download the Terraform Registry provided Modules</strong>. These are stored in the <code class="highlighter-rouge">$TERRAFORM_ROOT/.terraform</code> directory. The underlying structure is a reflection of the organization of your project’s <code class="highlighter-rouge">module</code> structure. The importance of the <code class="highlighter-rouge">.terraform</code> directory <em>CANNOT be UNDERESTIMATED</em>. For each Terraform Registry Module, the complete implementation as well as <em>EXAMPLES</em> are provided. <strong>Use the provided examples to understand how to configure the Module.</strong></p>
+
+    <p><strong>Example <code class="highlighter-rouge">.terraform</code> directory</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/104960156-eb227a00-5990-11eb-9497-4663b7c8b174.png" alt=".terraform directory" /></p>
+  </li>
+</ol>
+
+<blockquote>
+  <p><strong>[Recommendation] The root <code class="highlighter-rouge">main.tf</code> should have <code class="highlighter-rouge">module</code> references to user-defined implementation details for specific
+provider features</strong></p>
+
+  <p>The root Module at the top of the Terraform hierarchy, should only contain global configuration and <em>NOT</em> provider specific
+implementation details. These details should be defined in another module which is referenced from the <code class="highlighter-rouge">main.tf</code> file. For
+example, here’s how I have my <code class="highlighter-rouge">main.tf</code> structured for my project (where AWS is the provider I’m using). Replace the
+<code class="highlighter-rouge">required_providers</code> with the corresponding provider for your project.</p>
+
+  <p><strong><em>${TERRAFORM_ROOT}/main.tf</em></strong></p>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>terraform {
+  // You _CANNOT_ perform variable interpolation within this terraform block!
+  required_providers {
+    ... 
+    aws = {
+      source  = "hashicorp/aws"
+      version = "&gt;= 3.19.0"
+    }
+  }
+...
+}
+provider "aws" {
+  // These variables are passed in at run time with the use of a .tfvars file
+  region  = var.region 
+  profile = var.aws_profile
+  ...
+}
+locals {
+  // An example of a local variable that is uses a built-in terraform value and reused throughout the main.tf
+  local_variable = "${terraform.variable_name}"
+  ...
+}
+module "aws_iam_user" {
+  source = "./aws/iam"
+
+  // Input variables provided to the module. These NEED TO BE DEFINED in the module's variables.tf
+  iam_user_var1 = "${local_variable}-iam"
+  iam_user_var2 = "some_value"
+  iam_username = "test"
+  ...
+}
+module "aws_lambda" {
+  source = "./aws/lambda"
+
+  // Input variables provided to the module. These NEED TO BE DEFINED in the module's variables.tf
+  lambda_var1 = "${local_variable}-lambda"
+  lambda_var2 = "another_value"
+  ...
+}
+...
+</code></pre></div>  </div>
+</blockquote>
+
+<blockquote>
+  <p><strong>[Recommendation] Document <code class="highlighter-rouge">module</code> required/optional/default variables for 3rd party Modules</strong>
+For example, here’s my AWS IAM user module specification:</p>
+
+  <p><strong><em>${TERRAFORM_ROOT}/aws/iam/main.tf</em></strong></p>
+  <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">module "iam_iam-user" {
+source = "terraform-aws-modules/iam/aws//modules/iam-user"
+ version = "3.6.0"
+
+</span><span class="gp"> #</span><span class="w"> </span>REQUIRED Inputs
+<span class="go"> name = var.iam_username
+
+</span><span class="gp"> #</span><span class="w"> </span>OPTIONAL Inputs
+<span class="go"> force_destroy = true                // default: false
+ password_length = 32                // default: 20
+ password_reset_required = false     // default: true
+ pgp_key = var.keybase_user          // default: ""
+
+</span><span class="gp"> #</span><span class="w"> </span>UNUSED Default Inputs
+<span class="go"> // create_iam_access_key = true
+ // create_iam_user_login_profile = true
+ // create_user = true
+ // path = "/"
+ // permissions_boundary = ""
+ // ssh_key_encoding = "SSH"
+ // ssh_public_key = ""
+ // tags = {}
+ // upload_iam_user_ssh_key = false
+}
+</span></code></pre></div>  </div>
+</blockquote>
+
+<blockquote>
+  <p><strong>[Recommendation] Specify input <code class="highlighter-rouge">variable</code>s for your user-defined Module in <code class="highlighter-rouge">variables.tf</code>.</strong> You should have a <code class="highlighter-rouge">variables.tf</code> file for each Module <em>even if you don’t specify any variables</em>. It can be parsed by endusers to quickly determine what Input variables are <em>REQUIRED</em> to properly configure the Module.
+For example:</p>
+
+  <p><strong><em>$TERRAFORM_ROOT}/aws/iam/variables.tf</em></strong></p>
+  <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>These variables _SHOULD_ be provided <span class="k">in </span>the parent<span class="s1">'s module block
+</span><span class="go">
+variable "iam_username" {}
+variable "variable2" {}
+variable "variable3" {}
+</span><span class="c">...
+</span></code></pre></div>  </div>
+</blockquote>
+
+<blockquote>
+  <p><strong>[Recommendation] Define all Module output in the <code class="highlighter-rouge">outputs.tf</code></strong>.
+For example:</p>
+
+  <p><strong><em>${TERRAFORM_ROOT}/aws/iam/outputs.tf</em></strong></p>
+  <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">output "access_key" {
+  value = module.iam_iam-user.this_iam_access_key_id
+}
+
+output "secret" {
+  value = module.iam_iam-user.this_iam_access_key_encrypted_secret
+}
+
+output "username" {
+  value = module.iam_iam-user.this_iam_user_name
+}
+
+output "password" {
+  value = module.iam_iam-user.this_iam_user_login_profile_encrypted_password
+}
+
+output "lambda_role_arn" {
+  value = aws_iam_role.lambda_role.arn
+}
+</span><span class="c">...
+</span></code></pre></div>  </div>
+  <blockquote>
+    <p><strong><em>NOTE:</em></strong> Use the <code class="highlighter-rouge">module</code> references to refer to a Module’s defined Output variables.</p>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <p><strong>[WARNING]: Variable interpolation <em>CANNOT</em> be used in a number of places.</strong>
+You <em>CANNOT</em> use variable interpolation/expansion in the following circumstances:</p>
+
+  <ol>
+    <li>In the <code class="highlighter-rouge">terraform</code> block</li>
+    <li>In the <code class="highlighter-rouge">source</code> parameter of a <code class="highlighter-rouge">module</code> block</li>
+    <li>In the definition of another <code class="highlighter-rouge">variable</code>. In other words, nested variable interpolation is <em>NOT</em> supported.</li>
+  </ol>
+</blockquote>
+
+<blockquote>
+  <p><strong>[WARNING]: The Terraform Registry does <em>NOT</em> correctly document the required variables <em>NOR</em> the correct usage.</strong>
+Use the <code class="highlighter-rouge">examples</code> provided in the <code class="highlighter-rouge">.terraform</code> directory when <code class="highlighter-rouge">terraform init</code> is run.</p>
+</blockquote>
+
+<h3 id="terraform-workspaces">Terraform Workspaces</h3>
+
+<p>When Terraform executes a <code class="highlighter-rouge">plan</code>, the state for your infrastructure is stored locally in a <code class="highlighter-rouge">.tfstate</code> file. If you have multiple deployment environments, this can be problematic as a single state file can be overwritten depending on the environment you are trying to deploy. To avoid this situation, Terraform provides the Workspace feature. Each Workspace maintains a different <code class="highlighter-rouge">.tfstate</code> file. As a team grows, sharing this state information becomes a high priority.</p>
+
+<p>An additional challenge is that state files contain sensitive information (such as secrets) which may be required for deployments.</p>
+
+<p>Any solution requires both separation of deployment states as well as the ability to share/update state with access control privileges. Tracing of changes to infrastructure can help remediate breaking changes to specific changes introduced by individual devs.</p>
+
+<p><em>Enter <a href="https://www.terraform.io/cloud">Terraform Cloud</a>.</em></p>
+
+<h4 id="use-terraform-cloud-to-structure-workspaces-and-save-deployment-state">Use Terraform Cloud to structure Workspaces and save deployment state</h4>
+
+<p>Terraform Cloud is a remote backend state storage service. If either no remote <code class="highlighter-rouge">backend</code> or Workspace is specified, the following will occur:</p>
+
+<ul>
+  <li>Terraform will use the <code class="highlighter-rouge">default</code> Workspace.</li>
+  <li>Terraform will use a local state backend and store <code class="highlighter-rouge">.tfstate</code> in the <code class="highlighter-rouge">${TERRAFORM_ROOT}</code> directory on your machine.</li>
+</ul>
+
+<p>To configure Terraform Cloud as a remote backend with multiple Workspaces, you need to:</p>
+
+<ol>
+  <li><strong>Create a Terraform Cloud account.</strong></li>
+  <li><strong>Create a Workspace per deployment environment by specifying a Workspace <code class="highlighter-rouge">prefix</code> as a convention.</strong> For example, you could provision separate workspaces for dev, stage, and prod using the following Workspace naming convention (where <code class="highlighter-rouge">org-</code> is the organizational prefix):
+    <ul>
+      <li><code class="highlighter-rouge">org-dev</code></li>
+      <li><code class="highlighter-rouge">org-stage</code></li>
+      <li><code class="highlighter-rouge">org-prod</code></li>
+    </ul>
+  </li>
+  <li><strong>Configure the <code class="highlighter-rouge">terraform</code> block in your <code class="highlighter-rouge">${TERRAFORM_ROOT}/main.tf</code> with a remote backend</strong>:
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>backend "remote" {
+  hostname = "app.terraform.io"
+  organization = "org"
+
+  workspaces {
+    prefix = "org-"
+  }
+}
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Run <code class="highlighter-rouge">terraform init</code> to pick up the changes.</strong> You should see something similar in the output:
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Initializing the backend...
+
+Successfully configured the backend "remote"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+The currently selected workspace (default) does not exist.
+This is expected behavior when the selected workspace did not have an
+existing non-empty state. Please enter a number to select a workspace:
+  
+1. dev
+2. prod
+3. stage
+
+Enter a value: 
+
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<blockquote>
+  <p><strong>[BUG]: Disable Remote planning per configured workspace.</strong>
+<em>There is one last CAVEAT to get all of this working.</em></p>
+
+  <p>By default, Terraform Cloud uses the <code class="highlighter-rouge">Remote</code> Execution Mode when attempting to run <code class="highlighter-rouge">terraform plan</code>. Unfortunately, this
+does not seem to work with the AWS credentials. While the use of AWS local credentials works with <code class="highlighter-rouge">Local</code> planning, for some
+reason, it <em>FAILS</em> when the <em>default</em> <code class="highlighter-rouge">Remote</code> Execution Mode is configured. <em>This behavior occurs even if the
+<code class="highlighter-rouge">shared_credentials_file</code> parameter is set in your root Module’s <code class="highlighter-rouge">provider</code> block or if you try setting the ENV_VAR in the
+Terraform Cloud UI for the Workspace.</em></p>
+
+  <p><strong><em>The work-around is to go to each Workspace’s &gt; <code class="highlighter-rouge">Settings -&gt; General Settings</code> and change the Execution Mode to <code class="highlighter-rouge">Local</code>.</em></strong></p>
+
+  <p><strong>Terraform Cloud Workspace Settings:</strong></p>
+
+  <p><img src="https://user-images.githubusercontent.com/165323/104960154-eb227a00-5990-11eb-925a-a7adf2c86669.png" alt="Workspace Settings -&gt; General" /></p>
+
+  <p><strong>Execution Mode Default Setting:</strong></p>
+
+  <p><img src="https://user-images.githubusercontent.com/165323/104960152-ea89e380-5990-11eb-886b-7e5fb6a3ab82.png" alt="Execution Mode" /></p>
+
+  <p><em>The Workstate’s state file will be stored on &gt; Terraform Cloud, but the <code class="highlighter-rouge">terraform plan</code> will run locally</em>.</p>
+
+  <p>Here’s an example of the output when <code class="highlighter-rouge">Remote</code> execution is set for the Terraform Cloud Workspace, but fails:</p>
+  <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% terraform plan 
+Running plan in the remote backend. Output will stream here. Pressing Ctrl-C
+will stop streaming the logs, but will not stop the plan running remotely.
+
+Preparing the remote plan...
+
+To view this run in a browser, visit:
+https://app.terraform.io/app/scrb/scrb/runs/run-ynhciGC5Dp5CKHgy
+
+Waiting for the plan to start...
+
+Terraform v0.14.4
+Configuring remote state backend...
+Initializing Terraform configuration...
+
+Error: No valid credential sources found for AWS Provider.
+        Please see https://terraform.io/docs/providers/aws/index.html for more information on
+        providing credentials for the AWS Provider
+
+on example.tf line 17, in provider "aws":
+17: provider "aws" {
+</span></code></pre></div>  </div>
+</blockquote>
+
+<blockquote>
+  <p><strong>[BUG]: Misleading error message on misconfiguration.</strong>
+If you forget to specify or use the <code class="highlighter-rouge">workspace.prefix</code> directive in your configuration, <code class="highlighter-rouge">terraform</code> operations will fail
+opaquely with the following message:</p>
+  <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% terraform workspace list
+workspaces not supported
+</span></code></pre></div>  </div>
+  <p>Ideally, a more informative error message would point you at the issue :(</p>
+</blockquote>
+
+<h1 id="devops-workflow">DevOps Workflow</h1>
+
+<p>Now that you’ve set up your project repository, Workspaces, environment variables, how do you incorporate this into your DevOps pipeline? The following guidance assumes an AWS provider, but should apply to any supported cloud provider.</p>
+
+<p>Here are a few suggestions:</p>
+
+<ol>
+  <li><strong>There should be 3 branches in your Terraform project’s git repo which correspond to each of the different deployments/Workspaces - <code class="highlighter-rouge">dev</code>, <code class="highlighter-rouge">stage</code>, and <code class="highlighter-rouge">prod</code>.</strong> Having different branches isolates changes from propagating automatically to QA/production environments. <strong><em>[Optional - You can use the <code class="highlighter-rouge">main</code> (historically called <code class="highlighter-rouge">master</code> branch of your git repo as <code class="highlighter-rouge">prod</code>].</em></strong> In any case, pushing Terraform changes to <code class="highlighter-rouge">stage</code> or <code class="highlighter-rouge">prod</code> should be limited to automated/audited processes only. This allows changes to be gated on assurance tests before becoming live on production.</li>
+  <li><strong>Developers making changes to the infrastructure should <em>ONLY</em> use feature branches off of the <code class="highlighter-rouge">dev</code> branch.</strong> When the Terraform change is ready, it is merged into the <code class="highlighter-rouge">dev</code> branch. This is the only branch developer can commit changes to directly and should be enforced in the Terraform git repo.</li>
+  <li><strong>When changes are made to <code class="highlighter-rouge">dev</code>, they are pulled into <code class="highlighter-rouge">stage</code> branch for testing.</strong> Ideally, there are automated tests which verify that there are no breaking changes and that the deployed application passes the required assurance tests/processes before being promoted to production.</li>
+  <li><strong>Finally, when changes to <code class="highlighter-rouge">stage</code> have passed, the Terraform changes are merged into <code class="highlighter-rouge">prod</code>.</strong> This step should be <em>fully</em> automated using a CI/CD system of your choice.</li>
+</ol>
+
+<p>Note that:</p>
+
+<ul>
+  <li><strong>For each stage, a set of corresponding <code class="highlighter-rouge">.tfvars</code> is used.</strong> For example, to perform a developer deployment, the <code class="highlighter-rouge">dev.tfvars</code> are used as an argument to the Terraform operation (i.e. <code class="highlighter-rouge">terraform plan -var-file=./env/dev.tfvars</code>).</li>
+  <li><strong>It’s also recommended that different IAM accounts are associated with each stage.</strong> Following AWS IAM guidelines, there should be a IAM group for developers which give them permissions for creating/deploying development <em>ONLY</em> infrastructure. Each developer should belong to the developer IAM group. For users who are responsible for <code class="highlighter-rouge">stage</code> environments, another group can be created with the requiste permissions, or alternatively an assumable role. For production deploy, the CI system should be configured with a limited set of credentials to pull the change in the Terraform repository and deploy on production infrastructure.</li>
+  <li><strong>Each deployment environment will have it’s own resources (meaning that all assets created within the deployment environment will be <em>UNIQUE</em> to it).</strong> This ensures that environments deployed by users will not accidentally use privileges associated with these environments to update the wrong environment.</li>
+  <li><strong>State files should be stored remotely using Terraform Cloud.</strong> This ensures that there is an audited trail of state changes which can potentially be used to restore previous state if a rollback is required.</li>
+  <li><strong>There’s a cost to maintaining different deployment environments due to the duplication of resources.</strong> <em>The benefit is the clear separation of deployment assets and the privileges required to access/deploy them.</em></li>
+</ul>
+
+<h1 id="miscellaneous">Miscellaneous</h1>
+
+<h2 id="why-is-there-a-keybaseio-dependency-for-the-aws-lambda-module">Why is there a <a href="https://keybase.io">Keybase.io</a> dependency for the AWS Lambda Module?</h2>
+
+<p>If you look closely at the Terraform Registry AWS Lambda Module, you’ll note that configuration requires a Keybase.io user. The purpose of this dependency is to be able to use a public PGP key for the purpose of encrypting credentials for the Lambda service. Unfortunately, there doesn’t seem to be an alternative (such as having a private/public PGP key to point the configuration towards or other public keyservers which might already contain a public PGP key). To be able to fulfill this dependency requires the following steps:</p>
+
+<ol>
+  <li>Create a PGP key pair.</li>
+  <li>Create a Keybase.io account.</li>
+  <li>Upload the public key to your Keybase.io account. This will require verification using the private key generated.</li>
+  <li>Once complete, you should be able to refer to the keybase PGP key using the <code class="highlighter-rouge">keybase:username</code> directive. This will resolve  a public Keybase URL (https://keybase.io/username/pgp_keys.asc) where the public PGP can be downloaded.</li>
+</ol>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>Hopefully, this give you a roadmap to get started on your Terraform journey. There should be enough to avoid the common Terraform pitfalls and provide you a scalable/extensible architecture for your Terraform project.</p>
+
+<p>Comments/feedback are welcome!</p>
+
+<h1 id="todo">TODO</h1>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Multi-provider single monolith Terraform repos? Is the ultimate redundancy/resiliency solution to deploy your cloud infrastructure to multiple providers? If so, who is doing this?</li>
+</ul>
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=Terraform+-+The+Missing+Manual%20-%20https://xirkus.github.io/posts/terraform-the-missing-manual%20by%20@xirkus" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://xirkus.github.io/posts/terraform-the-missing-manual" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+    Fin.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+
+<script src="/assets/vendor-734ddaa553ebf4e6ca703bd7c567ef4a0e43b0ba799607355e56b81e88781318.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-cfde13ac81ddaf4351b2e739603e2baf688d0fcc9aba613fe62bbb1c7b037fb9.js" type="text/javascript"></script>
+
+
+</body>
+</html>

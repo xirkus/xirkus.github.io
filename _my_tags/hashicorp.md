@@ -1,4 +1,0 @@
----
-slug: hashicorp
-name: Hashicorp
----

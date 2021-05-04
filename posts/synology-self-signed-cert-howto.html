@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>StrayLight - Musings from the Edge | Synology Self-signed Certificate How-to</title>
+  <meta name="description" content="Using the Synology NAS Certificates to Provision Private/Locally Scoped Self-signed SSL Certificates">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Synology Self-signed Certificate How-to">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://xirkus.github.io/posts/synology-self-signed-cert-howto">
+  <meta property="og:description" content="Using the Synology NAS Certificates to Provision Private/Locally Scoped Self-signed SSL Certificates">
+  <meta property="og:site_name" content="StrayLight - Musings from the Edge">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://xirkus.github.io/posts/synology-self-signed-cert-howto">
+  <meta name="twitter:title" content="Synology Self-signed Certificate How-to">
+  <meta name="twitter:description" content="Using the Synology NAS Certificates to Provision Private/Locally Scoped Self-signed SSL Certificates">
+
+  
+    <meta property="og:image" content="https://xirkus.github.io/assets/og-image-fb95251ceba6fe6900758797f54d7e5436006b398be2da456030c7af5265a59f.png">
+    <meta name="twitter:image" content="https://xirkus.github.io/assets/og-image-fb95251ceba6fe6900758797f54d7e5436006b398be2da456030c7af5265a59f.png">
+  
+
+  <link href="https://xirkus.github.io/feed.xml" type="application/rss+xml" rel="alternate" title="StrayLight - Musings from the Edge Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-dark-11327753546b2135c989eee5cd83497a2734b702928d016839d795f6c706e3d5.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-dark-d161409442b7e523089f24d08d0a55951549ece7504207c376d53b020713494d.png">
+      <link rel="stylesheet" type="text/css" href="/assets/dark-9cd1dd9848c994b7861828f4d4cc1f0586ad62b95537e097798620bbdabc3b40.css">
+    
+
+  
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="StrayLight - Musings from the Edge">StrayLight - Musings from the Edge</a>
+  <ul class="header-links">
+    
+      <li>
+        <a href="/about" title="About me">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-about">
+  <use href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about" xlink:href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://twitter.com/xirkus" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xirkus" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://stackoverflow.com/users/15160382" rel="noreferrer noopener" target="_blank" title="Stack Overflow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-stackoverflow">
+  <use href="/assets/stackoverflow-12ba59133ed134d26156d30f095e0222b6039395cf26f2fab0cb6ce3ef2db00d.svg#icon-stackoverflow" xlink:href="/assets/stackoverflow-12ba59133ed134d26156d30f095e0222b6039395cf26f2fab0cb6ce3ef2db00d.svg#icon-stackoverflow"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://keybase.io/mllaguno" rel="noreferrer noopener" target="_blank" title="Keybase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-keybase">
+  <use href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase" xlink:href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://hub.docker.com/r/mllaguno" rel="noreferrer noopener" target="_blank" title="Docker Hub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-docker">
+  <use href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker" xlink:href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:mel.llaguno@protonmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+  </ul>
+</nav>
+
+
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>Synology Self-signed Certificate How-to</h1>
+            <p>Using the Synology NAS Certificates to Provision Private/Locally Scoped Self-signed SSL Certificates</p>
+            <div class="article-list-footer">
+  <span class="article-list-date">
+    October 27, 2020
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      5 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/synology" title="See all posts with tag 'Synology'">Synology</a>
+    
+      
+      <a href="/tag/security" title="See all posts with tag 'Security'">Security</a>
+    
+  </div>
+</div>
+          </header>
+
+          <div class="article-content">
+            <p>It’s possible to use a Synology Diskstation’s Certificate generation functionality to create a set of privately scoped (non-FQDN) self-signed SSL certificates that you can use to provision internal network services so that connecting to them does not cause your browser to throw warning messages (or in the case of Chrome, prevent you from connecting at all).</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>Usually, when you add network devices to your personal private network, they are refereneced by IP addresses as naming requires either maintaining individual host files on each machine or setting up DNS. The first is pretty cumbersome; the second seems like overkill (unless you’re a masochist, which I have been in the past). As an alternative, I considered using locally scoped names associated with fixed IPs associated via a light-weight DNS resolver (in my case, using <code class="highlighter-rouge">unbound</code> running on my Raspberry Pi with Pi-Hole).</p>
+
+<p><strong>WARNING: This is clearly a <em>HACK</em> and is not intended to be used for production environments. If you need full SSL certificates on your internal network, you’ll need to configure split-horizon DNS with a FQDNs and a certificate provider (probably LetsEncrypt if you’re trying to do this for free, which Diskstation supports).</strong></p>
+
+<h1 id="generate-the-certificate-on-the-diskstation">Generate the Certificate on the Diskstation</h1>
+
+<ol>
+  <li>
+    <p><strong>Navigate to <code class="highlighter-rouge">Control Panel</code> -&gt; <code class="highlighter-rouge">Security</code> -&gt; <code class="highlighter-rouge">Certificates</code>.</strong> <img src="https://user-images.githubusercontent.com/165323/96403659-234dcd00-1196-11eb-9c89-9e7366b7fa64.png" alt="Screen Shot 2020-10-18 at 11 02 56 PM" /></p>
+  </li>
+  <li>
+    <p><strong>Click on <code class="highlighter-rouge">Add</code>. This should bring up the <code class="highlighter-rouge">Create certificate</code> dialog. Choose <code class="highlighter-rouge">Add a new certificate</code> and click <code class="highlighter-rouge">Next</code>.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96403728-52643e80-1196-11eb-8289-cfc37b2a2373.png" alt="Screen Shot 2020-10-18 at 11 04 30 PM" /></p>
+  </li>
+  <li>
+    <p><strong>Fill in the <code class="highlighter-rouge">Description</code> (something which identifies this local cert). Choose the <code class="highlighter-rouge">Create self-signed certificate</code> option and click <code class="highlighter-rouge">Next</code>.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96403786-6f007680-1196-11eb-8927-fe925687732a.png" alt="Screen Shot 2020-10-18 at 11 05 20 PM" /></p>
+  </li>
+  <li>
+    <p><strong>Fill in the root certificate details and click <code class="highlighter-rouge">Next</code>.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96403919-c3a3f180-1196-11eb-99f6-d7d49307fac0.png" alt="Screen Shot 2020-10-18 at 11 07 12 PM" /></p>
+  </li>
+  <li>
+    <p><strong>Specify the <code class="highlighter-rouge">Subject Alternative Name</code> which should match the local non-FQDN name of the machine on your network. Click <code class="highlighter-rouge">Next</code>.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96403926-ca326900-1196-11eb-97ac-b21bb33cb3c8.png" alt="Screen Shot 2020-10-18 at 11 07 43 PM" /></p>
+  </li>
+</ol>
+
+<blockquote>
+  <p><strong>WARNING:</strong> The certificate <em>MUST</em> have a <code class="highlighter-rouge">Subject Alternative Name</code> which matches the the local non-FQDN name or Chrome (not Firefox) will show an insecure connection when access this machine although https is being used.</p>
+</blockquote>
+
+<h1 id="download-the-generated-certificates-and-import-them-into-your-certificate-manager">Download the generated certificates and import them into your certificate manager.</h1>
+
+<ol>
+  <li>
+    <p><strong>Right click on the new certificate and choose the <code class="highlighter-rouge">Export certificate</code> option. This will download all of the certificates into an <code class="highlighter-rouge">archive.zip</code> file.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96404032-12518b80-1197-11eb-948b-84d06d77fe06.png" alt="Screen Shot 2020-10-18 at 11 09 45 PM" /></p>
+  </li>
+  <li>
+    <p><strong>Unpack the <code class="highlighter-rouge">archive.zip</code> file. This should contain the following files:</strong></p>
+
+    <ul>
+      <li><code class="highlighter-rouge">syno-ca-privkey.pem</code> - The private key for the generated root certificaate</li>
+      <li><code class="highlighter-rouge">syno-ca-cert.pem</code>- The public key for the generated root certificate</li>
+      <li><code class="highlighter-rouge">privkey.pem</code> - The private key for the generated server certificate (which matches the <code class="highlighter-rouge">Subject Alternative Name</code>/local non-FQDN)</li>
+      <li><code class="highlighter-rouge">cert.pem</code> - The public key for the generated server certificate (which matches the <code class="highlighter-rouge">Subject Alternative Name</code>/local non-FQDN)</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="in-macososx-use-keychain-access-to-import-the-certificates">In MacOS/OSX use Keychain Access to import the certificates</h2>
+
+<ol>
+  <li><strong>Import the <code class="highlighter-rouge">syno-ca-cert.pem</code> public key (either by clicking on it or using the <code class="highlighter-rouge">Import Items</code> option in Keychain Manager.</strong></li>
+</ol>
+
+<blockquote>
+  <p><strong>NOTE:</strong> You will be asked to provide your administrative password as these items are being added to the machine’s keystore. <em>These should be stored in the <code class="highlighter-rouge">System</code> Keychain.</em></p>
+</blockquote>
+
+<h3 id="grant-the-root-certificate-always-trust-privileges">Grant the root certificate <code class="highlighter-rouge">Always Trust</code> privileges</h3>
+
+<ol>
+  <li>
+    <p><strong>The <code class="highlighter-rouge">syno-ca-cert.pem</code> is the self-signed root certificate responsible for being the certificate authority for additional certificates. Trusting this certificate means that additional certs which use this as their CA will <em>automatically</em> be trusted.</strong></p>
+  </li>
+  <li>
+    <p><strong>To set this to <code class="highlighter-rouge">Always Trust</code>, select the root certificate in the Keychain Manager and right-click to <code class="highlighter-rouge">Get Info</code>. This should bring up a dialog box. Note that there are two sections - <code class="highlighter-rouge">Trust</code> and <code class="highlighter-rouge">Details</code>. Expand the <code class="highlighter-rouge">Trust</code> section and in the <code class="highlighter-rouge">when using this certificate</code> field, select <code class="highlighter-rouge">Always Trust</code>.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/97377417-95549f00-1885-11eb-9e65-092758e1c7ba.png" alt="Screen Shot 2020-10-27" /></p>
+  </li>
+</ol>
+
+<h3 id="import-the-associated-ssl-certificate-for-the-diskstation">Import the associated SSL certificate for the Diskstation</h3>
+
+<ol>
+  <li><strong>The <code class="highlighter-rouge">cert.pem</code> is the self-signed server certificate that can be used to establish <code class="highlighter-rouge">https</code> connections to the machine. Follow the import procedure you used for the root certificate. Unlike the root certificate, you will <em>NOT</em> need to set the <code class="highlighter-rouge">Trust</code> on this certificate explicitly as it will be inherited from the root certificate previously configured.</strong></li>
+</ol>
+
+<h1 id="generate-another-certificate-using-the-previously-generated-diskstation-root-certificate">Generate another certificate using the previously generated Diskstation root certificate</h1>
+
+<p>You can use this procedure to create SSL certificates for other machines on your network.</p>
+
+<h2 id="generate-another-certificate">Generate another certificate</h2>
+
+<p>Follow the instructions above to create a new self-signed certificate. We will be reusing the original the <em>ORIGINAL</em> generated root certificate (<code class="highlighter-rouge">syno-ca-cert.pem</code>) and private key (<code class="highlighter-rouge">syno-ca-privkey.pem</code>) to create a <strong>certificate signing request (CSR)</strong> for this new certificate.</p>
+
+<h2 id="create-a-certificate-signing-request-for-the-generated-cert">Create a certificate signing request for the generated cert</h2>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">% openssl 
+</span></code></pre></div></div>
+
+<h2 id="use-the-dsm-csr-functionality-to-sign-the-new-certificate">Use the DSM CSR functionality to sign the new certificate</h2>
+
+<ol>
+  <li>
+    <p><strong>Navigate to <code class="highlighter-rouge">Control Panel</code> -&gt; <code class="highlighter-rouge">Security</code> -&gt; <code class="highlighter-rouge">Certificates</code> on the DSM and click the <code class="highlighter-rouge">CSR</code> button.</strong></p>
+  </li>
+  <li>
+    <p><strong>In the <code class="highlighter-rouge">Create certificate</code> dialog box, select the <code class="highlighter-rouge">Sign certificate signing request</code> option and click <code class="highlighter-rouge">Next</code>.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96404105-4927a180-1197-11eb-81ae-955e13eafb16.png" alt="Screen Shot 2020-10-18 at 11 11 09 PM" /></p>
+
+    <blockquote>
+      <p><strong>NOTE:</strong> Ensure that you use the correct certificate root you generated previously to ensure that the new certificaate is associated with this self-signed CA.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>Upload the CSR generated via <code class="highlighter-rouge">openssl</code> in the previous step. Ensure that the <code class="highlighter-rouge">Subject Alternative Name</code> matches the local non-FQDN name of the server you are associating with this certificate.</strong></p>
+
+    <p><img src="https://user-images.githubusercontent.com/165323/96404120-4fb61900-1197-11eb-8999-2bef1120ed1c.png" alt="Screen Shot 2020-10-18 at 11 11 27 PM" /></p>
+  </li>
+  <li>
+    <p><strong>Download the signed certificate.</strong></p>
+  </li>
+  <li>
+    <p><strong>Import the <code class="highlighter-rouge">cert.pem</code> into Keychain Manager. Because this certificate was signed by the root certificate already granted <code class="highlighter-rouge">Trust</code>, this certificate should JUST WORK (fingers crossed).</strong></p>
+  </li>
+</ol>
+
+<h1 id="caveats">Caveats</h1>
+
+<ul>
+  <li>The DSM does <em>NOT</em> allow you to specify the certificate <code class="highlighter-rouge">Validity Period</code> for the root certificate/orignal cert. Strangely, it does allow you to specify it when using the <code class="highlighter-rouge">CSR</code> functionality.</li>
+</ul>
+
+<h1 id="todo">TODO</h1>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />provide the <code class="highlighter-rouge">openssl</code> command to generate the CSR</li>
+</ul>
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=Synology+Self-signed+Certificate+How-to%20-%20https://xirkus.github.io/posts/synology-self-signed-cert-howto%20by%20@xirkus" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://xirkus.github.io/posts/synology-self-signed-cert-howto" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+    Fin.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+
+<script src="/assets/vendor-734ddaa553ebf4e6ca703bd7c567ef4a0e43b0ba799607355e56b81e88781318.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-cfde13ac81ddaf4351b2e739603e2baf688d0fcc9aba613fe62bbb1c7b037fb9.js" type="text/javascript"></script>
+
+
+</body>
+</html>

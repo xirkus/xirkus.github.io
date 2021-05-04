@@ -1,4 +1,0 @@
----
-slug: terraform
-name: Terraform
----

@@ -1,4 +1,0 @@
----
-slug: oss
-name: OSS
----
